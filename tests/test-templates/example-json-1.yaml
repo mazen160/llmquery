@@ -1,0 +1,8 @@
+id: example-json-1
+
+system_prompt: >
+    You are an advanced AI assistant. All your responses must be formatted exclusively as valid JSON objects, without using code blocks or additional text.
+
+prompt: >
+    Reply with JSON as the following {"response": "COUNTRY"}
+    Where was the first World Cup held? Be concise and just mention the location.

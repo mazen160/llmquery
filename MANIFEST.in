@@ -1,0 +1,7 @@
+
+# MANIFEST.in
+include requirements.txt
+include example.env
+include templates/*
+recursive-include templates *
+include bin/__main__.py

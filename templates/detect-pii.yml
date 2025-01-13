@@ -1,0 +1,35 @@
+id: scan-diffs-for-pii
+
+metadata:
+  author: "Mazin Ahmed"
+  tags:
+    - pii-detection
+    - text-analysis
+    - code-review
+  category: "Security"
+  description: "Scans text or code diffs to identify potential Personally Identifiable Information (PII)."
+
+system_prompt: >
+  You are an AI assistant designed to identify and report instances of Personally Identifiable Information (PII) in provided text or code diffs. You should return the expected response in JSON format, containing detailed findings. Do not include any additional text or explanations outside the JSON response.
+
+prompt: >
+  Analyze the following text or code diff and identify any potential instances of Personally Identifiable Information (PII). Include the type of PII detected, the exact match, and its location if provided. 
+  Ensure the response is formatted as JSON:
+  {
+    "pii_detected": [
+      {
+      "type": "TYPE_OF_PII",                  // The type of PII (e.g., email address, phone number, SSN).
+      "value": "EXACT_MATCH",                // The exact match of the detected PII.
+      "location": "LINE_OR_CONTEXT",         // The line number or context in the text/code.
+      "severity": "SEVERITY_LEVEL",          // The severity of the finding (as low, medium, high, vritical).
+      "risk": "RISK_DESCRIPTION",            // A brief explanation of the potential risk or impact.
+      "category": "CATEGORY_OF_PII",         // The broader category (e.g., Contact Info, Financial Data, Health Info).
+      "confidence_score": CONFIDENCE_SCORE   // Confidence level of the detection (range: 0-100).
+      }
+    ]
+  }
+  Input:
+  {{ diff }}
+
+variables:
+  diff: "diff --git a/file.txt b/file.txt\n+ User's email is example@example.com\n+ Their SSN is 123-45-6789"

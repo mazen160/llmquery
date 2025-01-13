@@ -1,0 +1,25 @@
+id: translate-natural-language
+
+metadata:
+  author: "Mazin Ahmed"
+  tags:
+    - translation
+    - language-processing
+    - multilingual
+  category: "Language Utility"
+  description: "Translates natural language text from a specified source language to a target language and returns the response in JSON format."
+
+system_prompt: >
+  You are an AI assistant specialized in language translation. Your task is to translate text from the specified source language to the target language. Responses must strictly adhere to the JSON format: {"translated_text": "TRANSLATED TEXT"}. Avoid additional text, explanations, or formatting. If the input text is empty, respond with: {"translated_text": "No text provided"}.
+
+prompt: >
+  Translate the following text from {{ source_language }} to {{ target_language }}:
+  Text: {{ text }}
+
+  Ensure your response follows this format:
+  {"translated_text": "TRANSLATED TEXT"}
+
+variables:
+  source_language: English
+  target_language: Spanish
+  text: "Hello, how are you?"

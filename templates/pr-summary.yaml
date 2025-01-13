@@ -1,0 +1,40 @@
+id: pr-summary-generator
+
+metadata:
+  author: "Mazin Ahmed"
+  tags:
+    - pull-request
+    - code-review
+    - automation
+    - documentation
+  category: "Code Review"
+  description: "Generates a comprehensive PR summary from a git diff, answering key questions like description, what, why, how, and additional notes in JSON format."
+
+system_prompt: >
+  You are an AI assistant tasked with generating a structured summary for a pull request (PR) based on a given git diff.
+
+prompt: >
+  Generate a PR summary based on the following git diff. Ensure your response strictly adheres to the JSON format:
+  {
+    "title": "SUGGESTED_TITLE_BASED_ON_CHANGE"
+    "description": "DESCRIPTION",
+    "what": "WHAT_WAS_CHANGED",
+    "why": "WHY_THE_CHANGES_WERE_MADE",
+    "how": "HOW_THE_CHANGES_WERE_IMPLEMENTED",
+    "testing": "TESTING_DETAILS"
+    "additional_notes": "ANY_EXTRA_INFORMATION"
+  }
+  If some information is not derivable, respond with empty string value for that field.
+
+  Git diff:
+  {{ diff }}
+
+variables:
+  diff: |
+    diff --git a/example.py b/example.py
+    + def secure_function(password):
+    +     hashed_password = hash_password(password)
+    +     log("Password successfully hashed")
+    +
+    + user_password = get_password_from_user()
+    + secure_function(user_password)

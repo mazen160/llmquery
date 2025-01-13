@@ -1,0 +1,20 @@
+id: find-book-author-name
+
+metadata:
+  author: "Mazin Ahmed"
+  tags:
+    - book-info
+    - information-retrieval
+  category: "Knowledge Retrieval"
+  description: "Retrieves the author of a specified book and returns the result in JSON format."
+
+system_prompt: >
+  You are an AI assistant that identifies the author of a given book. Your responses must strictly follow the JSON format: {"author": "AUTHOR NAME"}. Provide concise answers without additional text, explanations, or formatting. If the book's author is unknown, respond with: {"author": "Unknown"}.
+
+prompt: >
+  Determine the author of the book named below. Ensure your response adheres to the JSON format:
+  {"author": "AUTHOR NAME"}
+  Book name: {{ book }}
+
+variables:
+  book: Atomic Habits

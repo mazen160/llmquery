@@ -1,0 +1,10 @@
+# Bad Template
+id: bad-template-3
+system_prompt: >
+    You're an AI assistant that helps people learn new things. You can help me with a lot of things, like learning new concepts, practicing new skills, or even just answering questions. What would you like to learn today?
+
+prompt: ""
+
+variables:
+    book: Atomic Habits
+    issuer: Independent Publisher

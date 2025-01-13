@@ -1,0 +1,43 @@
+id: pr-review-feedback
+
+metadata:
+  author: "Mazin Ahmed"
+  tags:
+    - code-review
+    - quality-analysis
+    - security
+    - feedback
+  category: "Code Review"
+  description: "Analyzes a git diff and provides constructive feedback on code quality, readability, maintainability, and security in JSON format."
+
+system_prompt: >
+  You are an AI assistant tasked with providing detailed and constructive feedback for code changes in a pull request. Focus on areas such as code quality, readability, maintainability, performance, and security. Respond strictly in JSON format. If there are no issues, return: {"feedback": "No issues found"}.
+
+prompt: >
+  Review the following git diff and provide constructive feedback in the following JSON format:
+  {
+    "feedback": [
+      {
+        "category": "CATEGORY_NAME",
+        "line_snippet": "CONTEXT",
+        "line_number": "LINE_NUMBER",
+        "comment": "DETAILED_FEEDBACK"
+      }
+    ]
+  }
+  Categories include: "Quality", "Readability", "Maintainability", "Performance", "Security", etc.
+  Ensure the response adheres to this format:
+  {"feedback": [{"category": "CATEGORY_NAME", "line": "LINE_NUMBER_OR_CONTEXT", "comment": "DETAILED_FEEDBACK"}]}
+
+  Git diff:
+  {{ diff }}
+
+variables:
+  diff: |
+    diff --git a/example.py b/example.py
+    + def insecure_function(password):
+    +     print(f"Your password is {password}")
+    +     # TODO: Replace with secure logging
+    +
+    + user_password = "12345"
+    + insecure_function(user_password)
