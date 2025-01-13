@@ -47,6 +47,20 @@ Language models have become integral to modern applications, but efficiently man
 
 View the full documentation at the [llmquery documentation](https://github.com/mazen160/llmquery/blob/main/docs/).
 
+
+## Installation
+
+```bash
+$ pip install llmquery
+```
+
+or manually:
+```bash
+$ git clone https://github.com/mazen160/llmquery.git
+$ cd llmquery
+$ python setup.py install
+```
+
 ## Basic Example
 
 ```python
