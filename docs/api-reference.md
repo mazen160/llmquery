@@ -15,8 +15,8 @@ The `LLMQuery` class is the core interface for interacting with various LLM prov
 | Parameter               | Type   | Description                                                                                    | Required | Default           |
 | ----------------------- | ------ | ---------------------------------------------------------------------------------------------- | -------- | ----------------- |
 | `provider`              | `str`  | The LLM provider to query. Supported values: `OPENAI`, `ANTHROPIC`, `GOOGLE_GEMINI`, `OLLAMA`. | Yes      | None              |
-| `template_path`         | `str`  | Path to a YAML template file defining the system and user prompts.                             | No       | None              |
-| `template_inline`       | `str`  | YAML template as a string (if not using `template_path`).                                      | No       | None              |
+| `templates_path`         | `str`  | Path to a YAML template directory or file defining the system and user prompts.                             | No       | None              |
+| `template_inline`       | `str`  | YAML template as a string (if not using `templates_path`).                                      | No       | None              |
 | `template_id`           | `str`  | ID of the template to use when multiple templates exist in the file.                           | No       | None              |
 | `variables`             | `dict` | Key-value pairs for dynamic variables in the template.                                         | No       | `{}`              |
 | `openai_api_key`        | `str`  | API key for OpenAI.                                                                            | No       | `None` (from ENV) |
@@ -28,7 +28,7 @@ The `LLMQuery` class is the core interface for interacting with various LLM prov
 
 #### **Raises**
 - `ValueError`: If required parameters are missing or invalid.
-- `FileNotFoundError`: If the specified `template_path` does not exist.
+- `FileNotFoundError`: If the specified `templates_path` does not exist.
 
 ---
 
@@ -68,7 +68,7 @@ from llmquery import LLMQuery
 
 query = LLMQuery(
     provider="OPENAI",
-    template_path="./templates/chat-template.yaml",
+    templates_path="./templates/chat-template.yaml",
     variables={"user_input": "What is the capital of France?"},
     openai_api_key="your-api-key",
     model="gpt-4",

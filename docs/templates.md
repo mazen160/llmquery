@@ -75,7 +75,7 @@ from llmquery import LLMQuery
 
 query = LLMQuery(
     provider="OPENAI",
-    template_path="./templates/translate-natural-language.yaml",
+    templates_path="./templates/translate-natural-language.yaml",
     variables={"source_language": "French", "target_language": "German", "text": "Bonjour"},
     openai_api_key="your-api-key"
 )

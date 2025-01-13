@@ -149,7 +149,7 @@ def main():
         console.print("[cyan]Initializing query...[/cyan]")
         query = llmquery.LLMQuery(
             provider=args.provider,
-            template_path=args.templates_path,
+            templates_path=args.templates_path,
             template_id=args.template_id,
             variables=variables,
             openai_api_key=os.getenv("OPENAI_API_KEY") if args.provider == "OPENAI" else args.api_key,

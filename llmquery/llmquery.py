@@ -33,7 +33,7 @@ class LLMQuery(object):
     def __init__(self,
                  provider: str = None,
                  template_inline: str = None,
-                 template_path: str = None,
+                 templates_path: str = None,
                  template_id: str = None,
                  variables: dict = None,
                  openai_api_key: str = None,
@@ -53,11 +53,11 @@ class LLMQuery(object):
         self.google_gemini_api_key = google_gemini_api_key
         self.model = model
 
-        if template_inline and template_path:
-            raise ValueError("You cannot specify both 'template_inline' and 'template_path' parameters.")
+        if template_inline and templates_path:
+            raise ValueError("You cannot specify both 'template_inline' and 'templates_path' parameters.")
 
-        if not template_inline and not template_path:
-            raise ValueError("You must specify either 'template_inline' or 'template_path' parameter.")
+        if not template_inline and not templates_path:
+            raise ValueError("You must specify either 'template_inline' or 'templates_path' parameter.")
         if template_inline:
             self.template = template_inline
             self.template = parser.Template(inline=self.template, variables=variables)
@@ -66,8 +66,8 @@ class LLMQuery(object):
             raise ValueError("The 'variables' parameter must be a dictionary.")
         self.variables = variables
 
-        if template_path:
-            self.templates = parser.load_templates(template_path)
+        if templates_path:
+            self.templates = parser.load_templates(templates_path)
             self.templates = parser.filter_invalid_templates(self.templates, variables=self.variables)
 
         if len(self.templates) == 1:
