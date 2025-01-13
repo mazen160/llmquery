@@ -154,7 +154,7 @@ options:
 ```
 
 ```bash
-$ llmquery --provider OPENAI --template ./templates/chat-template.yaml \
+$ llmquery --provider OPENAI --template ./llmquery-templates/chat-template.yaml \
   --variables '{"user_input": "What is AI?"}' --api-key your-api-key --model gpt-4
 ```
 
@@ -180,7 +180,7 @@ The `llmquery` binary is executed from the command line and supports various opt
 - `--templates-path`
   - **Description**: Path to the directory containing YAML templates.
   - **Default**: Set by the `llmquery` framework.
-  - **Example**: `--templates-path ./templates`
+  - **Example**: `--templates-path ./llmquery-templates`
 
 - `--template-id`
   - **Description**: Specifies a template ID for cases with multiple templates.
@@ -220,7 +220,7 @@ The `llmquery` binary is executed from the command line and supports various opt
 ## Examples
 
 ```bash
-llmquery --provider OPENAI --templates-path ./templates \
+llmquery --provider OPENAI --templates-path ./llmquery-templates \
   --template-id basic-query --variables '{"user_input": "What is AI?"}' \
   --api-key YOUR_API_KEY --model gpt-4
 ```
@@ -228,7 +228,7 @@ llmquery --provider OPENAI --templates-path ./templates \
 ### Using Variables from a File
 
 ```bash
-llmquery --provider ANTHROPIC --templates-path ./templates \
+llmquery --provider ANTHROPIC --templates-path ./llmquery-templates \
   --template-id basic-query --variables-file ./vars.json \
   --api-key YOUR_API_KEY --model claude-3-5-sonnet-latest
 ```
@@ -236,7 +236,7 @@ llmquery --provider ANTHROPIC --templates-path ./templates \
 ### Setting Maximum Tokens
 
 ```bash
-llmquery --provider GOOGLE_GEMINI --templates-path ./templates \
+llmquery --provider GOOGLE_GEMINI --templates-path ./llmquery-templates \
   --template-id translate-task --variables '{"text": "Hello", "language": "French"}' \
   --api-key YOUR_API_KEY --model gemini-latest --max-tokens 1000
 ```
@@ -313,7 +313,7 @@ print(query.Query())
 
 # 📝 Templates
 
-`llmquery` has a collection of well-tested LLM Prompts Templates for various use-cases, including Application Security, AI Security, Code Reviews, Developer Velocity, and general cases. You can check the templates at the `./templates` directory. All templates are bundled within llmquery, and can be accessed directly when refrencing the template ID.
+`llmquery` has a collection of well-tested LLM Prompts Templates for various use-cases, including Application Security, AI Security, Code Reviews, Developer Velocity, and general cases. You can check the templates at the `./llmquery-templates` directory. All templates are bundled within llmquery, and can be accessed directly when refrencing the template ID.
 
 
 Templates are powered by Jinja2, a Turing-complete template engine. This allows for the creation of dynamic and flexible templates through the use of conditional statements, loops, functions, and other advanced constructs.
