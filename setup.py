@@ -33,7 +33,9 @@ setup(
                                     'providers.google_gemini_lib*',
                                     'providers.openai_lib*',
                                     'providers.ollama_lib*']),
-    data_files=[("templates", templates_files)],
+    package_data={
+        'llmquery': ['../templates/*', '../templates/**/*'],
+    },
     entry_points={'console_scripts': ['llmquery=llmquery.__main__:main']},
     include_package_data=True,
     install_requires=required,
