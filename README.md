@@ -338,23 +338,6 @@ Feel free to create issues, submit pull requests, or suggest enhancements on Git
 
 ---
 
-# Installation
-
-### From Source
-
-```bash
-$ git clone https://github.com/mazen160/llmquery.git
-$ cd llmquery
-$ python3 setup.py install
-```
-
-### Using pip
-
-```bash
-$ pip install git+https://github.com/mazen160/llmquery
-```
-
----
 
 # 📄 License
 
