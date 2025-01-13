@@ -13,11 +13,11 @@ ACCEPTED_PROVIDERS = ["OPENAI", "ANTHROPIC", "GOOGLE_GEMINI", "OLLAMA"]
 TEMPLATES_PATH = os.path.join(sys.prefix, 'llmquery-templates')
 
 def find_templates_path():
-    possible_paths = [os.path.realpath(os.path.join(path, "templates")),
-                      os.path.realpath(os.path.join(path, "llmquery-templates")),
-                      os.path.join(sys.prefix, 'share', 'llmquery', 'llmquery-templates'),
+    possible_paths = [
                       os.path.join(sys.prefix, 'share', 'llmquery-templates'),
-                      os.path.join(sys.prefix, 'llmquery-templates')
+                      os.path.join(sys.prefix, 'share', 'llmquery', 'llmquery-templates'),
+                      os.path.realpath(os.path.join(path, "llmquery-templates")),
+                      os.path.realpath(os.path.join(path, "templates"))
     ]
 
     if os.path.exists(TEMPLATES_PATH):
