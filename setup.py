@@ -11,7 +11,7 @@ def list_files(directory):
     return paths
 
 
-templates_files = list_files("templates")
+templates_files = list_files("llmquery-templates")
 
 
 with open("requirements.txt") as f:
@@ -19,7 +19,7 @@ with open("requirements.txt") as f:
 
 setup(
     name="llmquery",
-    version="0.1.7",
+    version="0.1.9",
     author="Mazin Ahmed",
     author_email="mazin@mazinahmed.net",
     description="A package for querying various LLM providers",

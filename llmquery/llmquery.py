@@ -10,12 +10,14 @@ from google_gemini_lib import google_gemini
 from ollama_lib import ollama
 
 ACCEPTED_PROVIDERS = ["OPENAI", "ANTHROPIC", "GOOGLE_GEMINI", "OLLAMA"]
-TEMPLATES_PATH = os.path.join(sys.prefix, 'share', 'llmquery', 'llmquery-templates')
+TEMPLATES_PATH = os.path.join(sys.prefix, 'llmquery-templates')
 
 def find_templates_path():
     possible_paths = [os.path.realpath(os.path.join(path, "templates")),
                       os.path.realpath(os.path.join(path, "llmquery-templates")),
-                      os.path.join(sys.prefix, 'share', 'llmquery', 'llmquery-templates')
+                      os.path.join(sys.prefix, 'share', 'llmquery', 'llmquery-templates'),
+                      os.path.join(sys.prefix, 'share', 'llmquery-templates'),
+                      os.path.join(sys.prefix, 'llmquery-templates')
     ]
 
     if os.path.exists(TEMPLATES_PATH):
