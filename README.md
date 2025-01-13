@@ -5,7 +5,7 @@
 
 <h1 align="center">🌐 llmquery: Scaling GenAI automation 🌐</h1>
 <h2 align="center">Powerful LLM Query Framework with YAML Prompt Templates</h2>
-<h3 align="center"><a href="https://mazinahmed.net/blog/llmquery-project/">📰 Read the release blog post</a></h3>
+<h3 align="center"><a href="https://mazinahmed.net/blog/llmquery-project/">Read the release blog post</a></h3>
 
 ---
 
