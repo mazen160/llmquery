@@ -279,7 +279,7 @@ diff = """diff --git a/example.py b/example.py
 +
 + user_password = get_password_from_user()
 + secure_function(user_password)
-
+"""
 query = LLMQuery(
     provider="GOOGLE_GEMINI",
     templates_path=llmquery.templates_path,
