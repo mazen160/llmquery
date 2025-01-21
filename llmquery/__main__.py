@@ -23,9 +23,10 @@ def list_models():
     for i in llmquery.google_gemini.ACCEPTED_MODELS:
         console.print(f"[bold cyan]Google Gemini[/bold cyan] model: {i}")
     console.print("[bold cyan](OLLAMA)[/bold cyan]")
+    console.print("[bold cyan]OLLAMA[/bold cyan]: Run the command 'ollama list' to list available models.")
     console.print("[bold cyan](AWS Bedrock)[/bold cyan]")
     console.print(f"[bold cyan](AWS Bedrock)[/bold cyan] default model: {llmquery.aws_bedrock.DEFAULT_MODEL}")
-    console.print("[bold cyan]AWS Bedrock[/bold cyan]: Run the command 'aws bedrock list-foundation-models' to list available models.")
+    console.print("[bold cyan]AWS Bedrock[/bold cyan]: Run the command 'aws bedrock list-foundation-models' to list all models.")
     for i in llmquery.aws_bedrock.ALLOWED_MODELS:
         console.print(f"[bold cyan]AWS Bedrock[/bold cyan] model: {i}")
         
