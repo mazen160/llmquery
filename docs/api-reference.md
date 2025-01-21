@@ -25,6 +25,9 @@ The `LLMQuery` class is the core interface for interacting with various LLM prov
 | `model`                 | `str`  | The model to use for the query (e.g., `gpt-4`).                                                | Yes      | None              |
 | `max_tokens`            | `int`  | Maximum number of tokens for the response.                                                     | No       | 8192              |
 | `max_length`            | `int`  | Maximum character length for the prompt.                                                       | No       | 2048              |
+| `aws_bedrock_region`    | `str`  | AWS region for Bedrock service.                                                               | No       | None              |
+| `aws_bedrock_anthropic_version` | `str` | Anthropic version for AWS Bedrock Claude models.                                       | No       | "bedrock-2023-05-31" |
+
 
 #### **Raises**
 - `ValueError`: If required parameters are missing or invalid.
@@ -131,7 +134,13 @@ The `LLMQuery` class supports the following providers:
     - API Key: Required (`google_gemini_api_key` or `GOOGLE_GEMINI_API_KEY` in environment).
     - Models: `gemini-1.5-flash`, etc.
 
-4. **Ollama**
+4. **AWS Bedrock**
+    - Authentication: Uses AWS credentials from environment or config
+    - Region: Specified via `aws_bedrock_region`
+    - Models:  AWS Bedrock Models
+    - Anthropic Version: Configurable via `aws_bedrock_anthropic_version`
+
+5. **Ollama**
     - API Key: Optional, if required by the specific model.
     - Models: Defined per provider.
 

@@ -23,8 +23,12 @@ def list_models():
     for i in llmquery.google_gemini.ACCEPTED_MODELS:
         console.print(f"[bold cyan]Google Gemini[/bold cyan] model: {i}")
     console.print("[bold cyan](OLLAMA)[/bold cyan]")
-    console.print("[bold cyan]OLLAMA[/bold cyan]: Run the command 'ollama list' to list available models.")
-
+    console.print("[bold cyan](AWS Bedrock)[/bold cyan]")
+    console.print(f"[bold cyan](AWS Bedrock)[/bold cyan] default model: {llmquery.aws_bedrock.DEFAULT_MODEL}")
+    console.print("[bold cyan]AWS Bedrock[/bold cyan]: Run the command 'aws bedrock list-foundation-models' to list available models.")
+    for i in llmquery.aws_bedrock.ALLOWED_MODELS:
+        console.print(f"[bold cyan]AWS Bedrock[/bold cyan] model: {i}")
+        
 def display_banner():
     console.print("[bold magenta]Welcome to llmquery CLI![/bold magenta]", justify="left")
     console.print("[green]Scaling GenAI automation 🚀🌐[/green]", justify="left")
@@ -113,6 +117,20 @@ def main():
         help="List available models for the selected provider.",
     )
 
+    parser.add_argument(
+        "--aws-bedrock-region",
+        type=str,
+        help="AWS region for Bedrock service.",
+        default=llmquery.aws_bedrock.AWS_REGION,
+    )
+
+    parser.add_argument(
+        "--aws-bedrock-anthropic-version",
+        type=str,
+        help="Anthropic version for AWS Bedrock Claude models.",
+        default=llmquery.aws_bedrock.ANTHROPIC_VERSION,
+    )
+
     args = parser.parse_args()
 
     if args.list_models:
@@ -158,6 +176,8 @@ def main():
             model=args.model,
             max_tokens=args.max_tokens,
             max_length=args.max_length,
+            aws_bedrock_region=args.aws_bedrock_region,
+            aws_bedrock_anthropic_version=args.aws_bedrock_anthropic_version,
         )
 
         response = query.Query()
