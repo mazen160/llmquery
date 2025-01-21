@@ -57,6 +57,7 @@ class LLMQuery(object):
         self.model = model
         self.aws_bedrock_anthropic_version = aws_bedrock_anthropic_version
         self.aws_bedrock_region = aws_bedrock_region
+        self.max_tokens = max_tokens
 
         if template_inline and templates_path:
             raise ValueError("You cannot specify both 'template_inline' and 'templates_path' parameters.")
