@@ -8,8 +8,9 @@ from anthropic_lib import anthropic_claude
 from openai_lib import openai
 from google_gemini_lib import google_gemini
 from ollama_lib import ollama
+from aws_bedrock_lib import aws_bedrock
 
-ACCEPTED_PROVIDERS = ["OPENAI", "ANTHROPIC", "GOOGLE_GEMINI", "OLLAMA"]
+ACCEPTED_PROVIDERS = ["OPENAI", "ANTHROPIC", "GOOGLE_GEMINI", "OLLAMA", "AWS_BEDROCK"]
 TEMPLATES_PATH = os.path.join(sys.prefix, 'llmquery-templates')
 
 def find_templates_path():
@@ -41,7 +42,9 @@ class LLMQuery(object):
                  google_gemini_api_key: str = None,
                  model: str = None,
                  max_tokens: int = 8192,
-                 max_length: int = 2048):
+                 max_length: int = 2048,
+                 aws_bedrock_anthropic_version: str = None,
+                 aws_bedrock_region: str = None):
         self.template = None
         provider = provider.upper()
         if provider not in ACCEPTED_PROVIDERS:
@@ -52,6 +55,9 @@ class LLMQuery(object):
         self.anthropic_api_key = anthropic_api_key
         self.google_gemini_api_key = google_gemini_api_key
         self.model = model
+        self.aws_bedrock_anthropic_version = aws_bedrock_anthropic_version
+        self.aws_bedrock_region = aws_bedrock_region
+        self.max_tokens = max_tokens
 
         if template_inline and templates_path:
             raise ValueError("You cannot specify both 'template_inline' and 'templates_path' parameters.")
@@ -119,5 +125,12 @@ class LLMQuery(object):
                                                   model=self.model,
                                                   system_prompt=self.template.rendered_system_prompt,
                                                   user_prompt=self.template.rendered_prompt)
+        elif self.provider == "AWS_BEDROCK":
+            return aws_bedrock.aws_bedrock_generate_content(model=self.model,
+                                                            system_prompt=self.template.rendered_system_prompt,
+                                                            user_prompt=self.template.rendered_prompt,
+                                                            anthropic_version=self.aws_bedrock_anthropic_version,
+                                                            aws_region=self.aws_bedrock_region,
+                                                            max_tokens=self.max_tokens)
         else:
             raise ValueError("Provider not supported.")
