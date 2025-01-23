@@ -22,6 +22,10 @@ def list_models():
     console.print(f"[bold cyan]Google Gemini[/bold cyan] default model: {llmquery.google_gemini.DEFAULT_MODEL}")
     for i in llmquery.google_gemini.ACCEPTED_MODELS:
         console.print(f"[bold cyan]Google Gemini[/bold cyan] model: {i}")
+    console.print("[bold cyan](DeepSeek)[/bold cyan]")
+    console.print(f"[bold cyan]DeepSeek[/bold cyan] default model: {llmquery.deepseek.DEFAULT_MODEL}")
+    for i in llmquery.deepseek.ACCEPTED_MODELS:
+        console.print(f"[bold cyan]DeepSeek[/bold cyan] model: {i}")
     console.print("[bold cyan](OLLAMA)[/bold cyan]")
     console.print("[bold cyan]OLLAMA[/bold cyan]: Run the command 'ollama list' to list available models.")
     console.print("[bold cyan](AWS Bedrock)[/bold cyan]")
@@ -174,6 +178,7 @@ def main():
             openai_api_key=os.getenv("OPENAI_API_KEY") if args.provider == "OPENAI" else args.api_key,
             anthropic_api_key=os.getenv("ANTHROPIC_API_KEY") if args.provider == "ANTHROPIC" else args.api_key,
             google_gemini_api_key=os.getenv("GOOGLE_GEMINI_API_KEY") if args.provider == "GOOGLE_GEMINI" else args.api_key,
+            deepseek_api_key=os.getenv("DEEPSEEK_API_KEY") if args.provider == "DEEPSEEK" else args.api_key,
             model=args.model,
             max_tokens=args.max_tokens,
             max_length=args.max_length,

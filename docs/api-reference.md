@@ -140,7 +140,11 @@ The `LLMQuery` class supports the following providers:
     - Models:  AWS Bedrock Models
     - Anthropic Version: Configurable via `aws_bedrock_anthropic_version`
 
-5. **Ollama**
+5. **DeepSeek**
+    - API Key: Required (`deepseek_api_key` or `DEEPSEEK_API_KEY` in environment)
+    - Models: `deepseek-chat`, `deepseek-reasoner`, `deepseek-coder`, etc.
+
+6. **Ollama**
     - API Key: Optional, if required by the specific model.
     - Models: Defined per provider.
 

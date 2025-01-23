@@ -9,8 +9,9 @@ from openai_lib import openai
 from google_gemini_lib import google_gemini
 from ollama_lib import ollama
 from aws_bedrock_lib import aws_bedrock
+from deepseek_lib import deepseek
 
-ACCEPTED_PROVIDERS = ["OPENAI", "ANTHROPIC", "GOOGLE_GEMINI", "OLLAMA", "AWS_BEDROCK"]
+ACCEPTED_PROVIDERS = ["OPENAI", "ANTHROPIC", "GOOGLE_GEMINI", "OLLAMA", "AWS_BEDROCK", "DEEPSEEK"]
 TEMPLATES_PATH = os.path.join(sys.prefix, 'llmquery-templates')
 
 def find_templates_path():
@@ -40,6 +41,7 @@ class LLMQuery(object):
                  openai_api_key: str = None,
                  anthropic_api_key: str = None,
                  google_gemini_api_key: str = None,
+                 deepseek_api_key: str = None,
                  model: str = None,
                  max_tokens: int = 8192,
                  max_length: int = 2048,
@@ -54,6 +56,7 @@ class LLMQuery(object):
         self.openai_api_key = openai_api_key
         self.anthropic_api_key = anthropic_api_key
         self.google_gemini_api_key = google_gemini_api_key
+        self.deepseek_api_key = deepseek_api_key
         self.model = model
         self.aws_bedrock_anthropic_version = aws_bedrock_anthropic_version
         self.aws_bedrock_region = aws_bedrock_region
@@ -132,5 +135,10 @@ class LLMQuery(object):
                                                             anthropic_version=self.aws_bedrock_anthropic_version,
                                                             aws_region=self.aws_bedrock_region,
                                                             max_tokens=self.max_tokens)
+        elif self.provider == "DEEPSEEK":
+            return deepseek.deepseek_generate_content(deepseek_api_key=self.deepseek_api_key,
+                                                     model=self.model,
+                                                     system_prompt=self.template.rendered_system_prompt,
+                                                     user_prompt=self.template.rendered_prompt)
         else:
             raise ValueError("Provider not supported.")
