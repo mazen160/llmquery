@@ -11,7 +11,7 @@
 
 # 🚀 What is llmquery?
 
-`llmquery` is a comprehensive framework for interacting with Language Model APIs, such as OpenAI, Anthropic, Google Gemini, AWS Bedrock, and Ollama. It leverages standard YAML templates for prompt management, validation, and dynamic generation. Designed to streamline complex workflows, it allows developers to integrate, query, and test LLMs with ease.
+`llmquery` is a comprehensive framework for interacting with Language Model APIs, such as OpenAI, Anthropic, Google Gemini, AWS Bedrock, DeepSeek, and Ollama. It leverages standard YAML templates for prompt management, validation, and dynamic generation. Designed to streamline complex workflows, it allows developers to integrate, query, and test LLMs with ease.
 
 Whether you’re building a chatbot, generating creative content, or analyzing data, `llmquery` provides the tools to standardize and optimize LLM interactions.
 
@@ -136,8 +136,8 @@ usage: llmquery [-h] [--provider {OPENAI,ANTHROPIC,GOOGLE_GEMINI,OLLAMA}] [--tem
 
 options:
   -h, --help            show this help message and exit
-  --provider {OPENAI,ANTHROPIC,GOOGLE_GEMINI,AWS_BEDROCK,OLLAMA}
-                        Specify the LLM provider to use (e.g. OPENAI, ANTHROPIC, GOOGLE_GEMINI, OLLAMA).
+  --provider {OPENAI,ANTHROPIC,GOOGLE_GEMINI,AWS_BEDROCK,OLLAMA,DEEPSEEK}
+                        Specify the LLM provider to use (e.g. OPENAI, ANTHROPIC, GOOGLE_GEMINI, AWS_BEDROCK, OLLAMA, DEEPSEEK).
   --templates-path TEMPLATES_PATH
                         Path to the YAML templates directory defining the query.
   --template-id TEMPLATE_ID
@@ -175,7 +175,7 @@ The `llmquery` binary is executed from the command line and supports various opt
 
 - `--provider`
   - **Description**: Specifies the LLM provider to use.
-  - **Accepted Values**: `OPENAI`, `ANTHROPIC`, `GOOGLE_GEMINI`, `AWS_BEDROCK`, `OLLAMA`
+  - **Accepted Values**: `OPENAI`, `ANTHROPIC`, `GOOGLE_GEMINI`, `AWS_BEDROCK`, `OLLAMA`, `DEEPSEEK`
   - **Example**: `--provider OPENAI`
 
 - `--templates-path`
@@ -324,6 +324,10 @@ print(query.Query())
   - **Example**: `export AWS_DEFAULT_REGION="us-east-1"`
   
 - Check the full list of environment variables at `example.env`.
+
+- `DEEPSEEK_API_KEY`
+  - **Description**: API key for the DeepSeek provider.
+  - **Example**: `export DEEPSEEK_API_KEY="API_KEY"`
 
 
 ---

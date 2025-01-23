@@ -19,7 +19,7 @@ with open("requirements.txt") as f:
 
 setup(
     name="llmquery",
-    version="0.1.12",
+    version="0.1.14",
     author="Mazin Ahmed",
     author_email="mazin@mazinahmed.net",
     description="A package for querying various LLM providers",
@@ -33,7 +33,8 @@ setup(
                                     'providers.google_gemini_lib*',
                                     'providers.openai_lib*',
                                     'providers.ollama_lib*',
-                                    'providers.aws_bedrock_lib*']),
+                                    'providers.aws_bedrock_lib*',
+                                    'providers.deepseek_lib*']),
     data_files=[("llmquery-templates", templates_files)],
     entry_points={'console_scripts': ['llmquery=llmquery.__main__:main']},
     include_package_data=True,
