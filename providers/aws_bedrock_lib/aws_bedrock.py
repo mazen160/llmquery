@@ -4,11 +4,15 @@ import os
 from typing import Dict, Any
 
 # Configuration constants
-AWS_REGION = os.getenv('AWS_REGION', 'us-east-1')
-ALLOWED_MODELS = ["anthropic.claude-3-sonnet-20240229-v1:0", "anthropic.claude-3-haiku-20240307-v1:0"]
+AWS_REGION = os.getenv("AWS_REGION", "us-east-1")
+ALLOWED_MODELS = [
+    "anthropic.claude-3-sonnet-20240229-v1:0",
+    "anthropic.claude-3-haiku-20240307-v1:0",
+]
 DEFAULT_MODEL = "anthropic.claude-3-haiku-20240307-v1:0"
 MAX_TOKENS = 8129
 ANTHROPIC_VERSION = "bedrock-2023-05-31"
+
 
 def aws_bedrock_generate_content(
     model: str = None,
@@ -16,17 +20,17 @@ def aws_bedrock_generate_content(
     user_prompt: str = None,
     aws_region: str = None,
     max_tokens: int = MAX_TOKENS,
-    anthropic_version: str = ANTHROPIC_VERSION
+    anthropic_version: str = ANTHROPIC_VERSION,
 ) -> Dict[str, Any]:
     """
     Generate content using AWS Bedrock's models.
-    
+
     Args:
         aws_region: AWS region for the Bedrock service
         model: The model ID to use for generation
         system_prompt: Optional system prompt to prepend
         user_prompt: The user's input prompt
-    
+
     Returns:
         Dictionary containing the response and metadata
     """
@@ -36,18 +40,17 @@ def aws_bedrock_generate_content(
     if not model:
         model = DEFAULT_MODEL
     if model not in ALLOWED_MODELS:
-        raise ValueError(f"Model {model} is not supported. Supported models are: {ALLOWED_MODELS}")
-    
+        raise ValueError(
+            f"Model {model} is not supported. Supported models are: {ALLOWED_MODELS}"
+        )
+
     if not user_prompt:
         raise ValueError("User prompt is required.")
 
     region = aws_region or AWS_REGION
-    
+
     # Initialize AWS Bedrock runtime client
-    bedrock_runtime = boto3.client(
-        service_name='bedrock-runtime',
-        region_name=region
-    )
+    bedrock_runtime = boto3.client(service_name="bedrock-runtime", region_name=region)
 
     # Combine system and user prompts if both are provided
     prompt = f"{system_prompt}\n\n{user_prompt}" if system_prompt else user_prompt
@@ -55,31 +58,27 @@ def aws_bedrock_generate_content(
     payload = {
         "anthropic_version": anthropic_version,
         "max_tokens": max_tokens,
-        "messages": [{
-            "role": "user",
-            "content": [{"type": "text", "text": prompt}]
-        }]
+        "messages": [{"role": "user", "content": [{"type": "text", "text": prompt}]}],
     }
 
     response = bedrock_runtime.invoke_model(
         modelId=model,
         contentType="application/json",
         accept="application/json",
-        body=json.dumps(payload)
+        body=json.dumps(payload),
     )
 
-    response_body = json.loads(response['body'].read())
+    response_body = json.loads(response["body"].read())
 
     result = ""
-    for content in response_body.get('content', []):
-        result += content.get('text', '')
+    for content in response_body.get("content", []):
+        result += content.get("text", "")
 
     output = {
         "raw_response": response_body,
         "status_code": response.get("ResponseMetadata", {}).get("HTTPStatusCode", 200),
         "data": payload,
-        "response": result
+        "response": result,
     }
 
     return output
-

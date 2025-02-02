@@ -14,17 +14,41 @@ curl --location "https://api.mistral.ai/v1/chat/completions" \
 """
 
 MISTRAL_API_ENDPOINT = "https://api.mistral.ai/v1/chat/completions"
-ACCEPTED_MODELS = ['ministral-3b-latest', 'mistral-small', 'mistral-large-latest', 'mistral-medium', 'open-mistral-nemo', 'mistral-small-latest', 'codestral-latest', 'ministral-8b-latest', 'open-codestral-mamba']
+ACCEPTED_MODELS = [
+    "ministral-3b-latest",
+    "mistral-small",
+    "mistral-large-latest",
+    "mistral-medium",
+    "open-mistral-nemo",
+    "mistral-small-latest",
+    "codestral-latest",
+    "ministral-8b-latest",
+    "open-codestral-mamba",
+]
 DEFAULT_MODEL = "mistral-small-latest"
 DEFAULT_SYSTEM_PROMPT = "You are a helpful AI assistant."
 
 
-def mistral_generate_content(url_endpoint: str = None,
-                            mistral_api_key: str = None,
-                            model: str = None,
-                            system_prompt: str = None,
-                            user_prompt: str = None):
-    ACCEPTED_MODELS = ["mistral-large-latest", "mistral-medium", "mistral-small", "codestral-latest", "mistral-small-latest", "open-mistral-nemo", "open-codestral-mamba", "ministral-8b-latest", "ministral-3b-latest", "mistral-large-latest", "ministral-3b-latest"]
+def mistral_generate_content(
+    url_endpoint: str = None,
+    mistral_api_key: str = None,
+    model: str = None,
+    system_prompt: str = None,
+    user_prompt: str = None,
+):
+    ACCEPTED_MODELS = [
+        "mistral-large-latest",
+        "mistral-medium",
+        "mistral-small",
+        "codestral-latest",
+        "mistral-small-latest",
+        "open-mistral-nemo",
+        "open-codestral-mamba",
+        "ministral-8b-latest",
+        "ministral-3b-latest",
+        "mistral-large-latest",
+        "ministral-3b-latest",
+    ]
 
     if not url_endpoint:
         url_endpoint = MISTRAL_API_ENDPOINT
@@ -40,30 +64,34 @@ def mistral_generate_content(url_endpoint: str = None,
         raise ValueError("User prompt is required.")
 
     if model not in ACCEPTED_MODELS:
-        raise ValueError(f"Model {model} is not supported. Supported models are: {ACCEPTED_MODELS}")
+        raise ValueError(
+            f"Model {model} is not supported. Supported models are: {ACCEPTED_MODELS}"
+        )
 
     headers = {
         "Content-Type": "application/json",
-        "Authorization": f"Bearer {mistral_api_key}"
+        "Authorization": f"Bearer {mistral_api_key}",
     }
 
     data = {
         "model": model,
         "messages": [
             {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_prompt}
+            {"role": "user", "content": user_prompt},
         ],
     }
 
     response = requests.post(url_endpoint, headers=headers, json=data)
     if response.status_code != 200:
-        raise Exception(f"Failed to connect to Mistral API. Status code: {response.status_code}. Response: {response.text}")
+        raise Exception(
+            f"Failed to connect to Mistral API. Status code: {response.status_code}. Response: {response.text}"
+        )
 
     output = {
         "raw_response": response,
         "status_code": response.status_code,
         "data": data,
-        "response": ""
+        "response": "",
     }
 
     response_json = response.json()
@@ -74,5 +102,3 @@ def mistral_generate_content(url_endpoint: str = None,
         output["response"] += choice.get("message", {}).get("content", "")
 
     return output
-
-

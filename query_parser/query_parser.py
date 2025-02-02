@@ -60,13 +60,17 @@ class Template(object):
         self.system_prompt = self.data.get("system_prompt", DEFAULT_SYSTEM_PROMPT)
 
         self.rendered_prompt = render_template(self.prompt, self.variables)
-        self.rendered_system_prompt = render_template(self.system_prompt, self.variables)
+        self.rendered_system_prompt = render_template(
+            self.system_prompt, self.variables
+        )
 
         if not self.rendered_prompt:
             raise ValueError(f"Prompt is empty in template '{self.id}'")
 
         if not self.rendered_system_prompt:
-            raise ValueError(f"System prompt is empty in template '{self.id}'. DEFAULT_SYSTEM_PROMPT was not used.")
+            raise ValueError(
+                f"System prompt is empty in template '{self.id}'. DEFAULT_SYSTEM_PROMPT was not used."
+            )
 
     def __parse_template(self):
         return yaml.safe_load(self.content)
@@ -96,18 +100,32 @@ def filter_invalid_templates(templates, variables={}):
 
 
 def extract_json(text):
-    start = end = 0
-    for i in range(len(text)):
+    # Find first occurrence of {
+    start = text.find("{")
+    if start == -1:
+        return None
+
+    # Scan forward from start to find matching }
+    balance = 0
+    end = -1
+    for i in range(start, len(text)):
         if text[i] == "{":
-            start = i
-            break
-    for i in range(len(text) - 1, 0, -1):
-        if text[i] == "}":
-            end = i
-            break
+            balance += 1
+        elif text[i] == "}":
+            balance -= 1
+            if balance == 0:
+                end = i
+                break
+
+    # Fallback if unbalanced
+    if end == -1:
+        end = text.rfind("}")
+
+    if end == -1 or end < start:
+        return None
 
     try:
-        return json.loads(text[start:end + 1])
+        return json.loads(text[start : end + 1])
     except json.JSONDecodeError:
         return None
 
