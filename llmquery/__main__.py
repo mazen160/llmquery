@@ -43,9 +43,9 @@ def list_models():
         console.print(f"[bold cyan]Mistral[/bold cyan] model: {i}")
     console.print("[bold cyan](GitHub AI)[/bold cyan]")
     console.print(
-        f"[bold cyan]GitHub AI[/bold cyan] default model: {llmquery.github_ai.DEFAULT_MODEL}"
+        f"[bold cyan]GitHub AI[/bold cyan] default model: {llmquery.github_ai_models.DEFAULT_MODEL}"
     )
-    for i in llmquery.github_ai.ACCEPTED_MODELS:
+    for i in llmquery.github_ai_models.ACCEPTED_MODELS:
         console.print(f"[bold cyan]GitHub AI[/bold cyan] model: {i}")
     console.print("[bold cyan](OLLAMA)[/bold cyan]")
     console.print(
