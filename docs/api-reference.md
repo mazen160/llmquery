@@ -12,24 +12,27 @@ The `LLMQuery` class is the core interface for interacting with various LLM prov
 
 #### **Parameters**
 
-| Parameter               | Type   | Description                                                                                    | Required | Default           |
-| ----------------------- | ------ | ---------------------------------------------------------------------------------------------- | -------- | ----------------- |
-| `provider`              | `str`  | The LLM provider to query. Supported values: `OPENAI`, `ANTHROPIC`, `GOOGLE_GEMINI`, `OLLAMA`. | Yes      | None              |
-| `templates_path`         | `str`  | Path to a YAML template directory or file defining the system and user prompts.                             | No       | None              |
-| `template_inline`       | `str`  | YAML template as a string (if not using `templates_path`).                                      | No       | None              |
-| `template_id`           | `str`  | ID of the template to use when multiple templates exist in the file.                           | No       | None              |
-| `variables`             | `dict` | Key-value pairs for dynamic variables in the template.                                         | No       | `{}`              |
-| `openai_api_key`        | `str`  | API key for OpenAI.                                                                            | No       | `None` (from ENV) |
-| `anthropic_api_key`     | `str`  | API key for Anthropic.                                                                         | No       | `None` (from ENV) |
-| `google_gemini_api_key` | `str`  | API key for Google Gemini.                                                                     | No       | `None` (from ENV) |
-| `model`                 | `str`  | The model to use for the query (e.g., `gpt-4`).                                                | Yes      | None              |
-| `max_tokens`            | `int`  | Maximum number of tokens for the response.                                                     | No       | 8192              |
-| `max_length`            | `int`  | Maximum character length for the prompt.                                                       | No       | 2048              |
-| `aws_bedrock_region`    | `str`  | AWS region for Bedrock service.                                                               | No       | None              |
-| `aws_bedrock_anthropic_version` | `str` | Anthropic version for AWS Bedrock Claude models.                                       | No       | "bedrock-2023-05-31" |
-
+| Parameter                       | Type   | Description                                                                                    | Required | Default              |
+| ------------------------------- | ------ | ---------------------------------------------------------------------------------------------- | -------- | -------------------- |
+| `provider`                      | `str`  | The LLM provider to query. Supported values: `OPENAI`, `ANTHROPIC`, `GOOGLE_GEMINI`, `OLLAMA`. | Yes      | None                 |
+| `templates_path`                | `str`  | Path to a YAML template directory or file defining the system and user prompts.                | No       | None                 |
+| `template_inline`               | `str`  | YAML template as a string (if not using `templates_path`).                                     | No       | None                 |
+| `template_id`                   | `str`  | ID of the template to use when multiple templates exist in the file.                           | No       | None                 |
+| `variables`                     | `dict` | Key-value pairs for dynamic variables in the template.                                         | No       | `{}`                 |
+| `openai_api_key`                | `str`  | API key for OpenAI.                                                                            | No       | `None` (from ENV)    |
+| `anthropic_api_key`             | `str`  | API key for Anthropic.                                                                         | No       | `None` (from ENV)    |
+| `google_gemini_api_key`         | `str`  | API key for Google Gemini.                                                                     | No       | `None` (from ENV)    |
+| `deepseek_api_key`              | `str`  | API key for DeepSeek.                                                                          | No       | `None` (from ENV)    |
+| `mistral_api_key`               | `str`  | API key for Mistral.                                                                           | No       | `None` (from ENV)    |
+| `github_token`                  | `str`  | GitHub token for GitHub AI Models.                                                             | No       | `None` (from ENV)    |
+| `model`                         | `str`  | The model to use for the query (e.g., `gpt-4`).                                                | Yes      | None                 |
+| `max_tokens`                    | `int`  | Maximum number of tokens for the response.                                                     | No       | 8192                 |
+| `max_length`                    | `int`  | Maximum character length for the prompt.                                                       | No       | 2048                 |
+| `aws_bedrock_region`            | `str`  | AWS region for Bedrock service.                                                                | No       | None                 |
+| `aws_bedrock_anthropic_version` | `str`  | Anthropic version for AWS Bedrock Claude models.                                               | No       | "bedrock-2023-05-31" |
 
 #### **Raises**
+
 - `ValueError`: If required parameters are missing or invalid.
 - `FileNotFoundError`: If the specified `templates_path` does not exist.
 
@@ -38,6 +41,7 @@ The `LLMQuery` class is the core interface for interacting with various LLM prov
 ### Methods
 
 #### `Query()`
+
 Executes the query using the defined provider and template.
 
 **Returns:**
@@ -51,12 +55,14 @@ output = {
     "response": ""  # The actual LLM output
 }
 ```
+
 - `raw_response`: A `requests.Response` object containing the raw HTTP response.
 - `status_code`: The HTTP status code of the response.
 - `data`: The data payload sent to the LLM.
 - `response`: The processed output from the LLM.
 
 **Raises:**
+
 - `ValueError`: If the query exceeds token or length limits.
 - `Exception`: For provider-specific API errors.
 
@@ -123,30 +129,45 @@ print(response)
 The `LLMQuery` class supports the following providers:
 
 1. **OpenAI**
-    - API Key: Required (`openai_api_key` or `OPENAI_API_KEY` in environment).
-    - Models: `gpt-4o`, `gpt-3.5-turbo`, etc.
+
+   - API Key: Required (`openai_api_key` parameter or `OPENAI_API_KEY` in environment).
+   - Models: `gpt-4o`, `gpt-3.5-turbo`, etc.
 
 2. **Anthropic (Claude)**
-    - API Key: Required (`anthropic_api_key` or `ANTHROPIC_API_KEY` in environment).
-    - Models: `claude-3-5-sonnet-latest`, etc.
+
+   - API Key: Required (`anthropic_api_key` parameter or `ANTHROPIC_API_KEY` in environment).
+   - Models: `claude-3-5-sonnet-latest`, etc.
 
 3. **Google Gemini**
-    - API Key: Required (`google_gemini_api_key` or `GOOGLE_GEMINI_API_KEY` in environment).
-    - Models: `gemini-1.5-flash`, etc.
+
+   - API Key: Required (`google_gemini_api_key` parameter or `GOOGLE_GEMINI_API_KEY` in environment).
+   - Models: `gemini-1.5-flash`, etc.
 
 4. **AWS Bedrock**
-    - Authentication: Uses AWS credentials from environment or config
-    - Region: Specified via `aws_bedrock_region`
-    - Models:  AWS Bedrock Models
-    - Anthropic Version: Configurable via `aws_bedrock_anthropic_version`
+
+   - Authentication: Uses AWS credentials from environment or config
+   - Region: Specified via `aws_bedrock_region`
+   - Models: AWS Bedrock Models
+   - Anthropic Version: Configurable via `aws_bedrock_anthropic_version`
 
 5. **DeepSeek**
-    - API Key: Required (`deepseek_api_key` or `DEEPSEEK_API_KEY` in environment)
-    - Models: `deepseek-chat`, `deepseek-reasoner`, `deepseek-coder`, etc.
 
-6. **Ollama**
-    - API Key: Optional, if required by the specific model.
-    - Models: Defined per provider.
+   - API Key: Required (`deepseek_api_key` parameter or `DEEPSEEK_API_KEY` in environment)
+   - Models: `deepseek-chat`, `deepseek-reasoner`, `deepseek-coder`, etc.
+
+6. **GitHub AI Models**
+
+   - Authentication: GitHub Token required (`github_token` parameter or `GITHUB_TOKEN` in environment)
+   - Models: `gpt-4o-mini`,`gpt-4o`, `DeepSeek-R1`, `o3-mini`, `Codestral-2501`, `Phi-4`, `Mistral-Large-2411`, etc.
+
+7. **Mistral**
+
+   - API Key: Required (`mistral_api_key` parameter or `MISTRAL_API_KEY` in environment)
+   - Models: `ministral-3b-latest`, `mistral-small`, `mistral-large-latest`, etc.
+
+8. **Ollama**
+   - API Key: Optional, if required by the specific model.
+   - Models: Defined per provider.
 
 ---
 
@@ -155,29 +176,31 @@ The `LLMQuery` class supports the following providers:
 The `LLMQuery` class includes robust error handling mechanisms:
 
 1. **Input Validation**
-    - Ensures templates are correctly formatted and variables are defined.
+
+   - Ensures templates are correctly formatted and variables are defined.
 
 2. **Provider-Specific Errors**
-    - Handles common API errors, such as unauthorized access or model unavailability.
+
+   - Handles common API errors, such as unauthorized access or model unavailability.
 
 3. **Custom Exceptions**
-    - Raises meaningful exceptions with actionable messages.
+   - Raises meaningful exceptions with actionable messages.
 
 ---
 
 ## Best Practices
 
 1. **Use Environment Variables for API Keys**
+
    - Avoid hardcoding keys. Use environment variables like `OPENAI_API_KEY`.
 
-3. **Optimize Prompts**
+2. **Optimize Prompts**
+
    - Ensure prompts are concise and within token limits to reduce costs and improve performance.
 
-4. **Handle Errors Gracefully**
+3. **Handle Errors Gracefully**
    - Use `try-except` blocks to handle exceptions and log errors effectively.
 
 ---
 
-
 For more examples and contributions, visit the [GitHub repository](https://github.com/mazen160/llmquery).
-

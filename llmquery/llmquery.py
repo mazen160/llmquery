@@ -10,8 +10,10 @@ from google_gemini_lib import google_gemini
 from ollama_lib import ollama
 from aws_bedrock_lib import aws_bedrock
 from deepseek_lib import deepseek
+from mistral_lib import mistral
+from github_ai_models_lib import github_ai
 
-ACCEPTED_PROVIDERS = ["OPENAI", "ANTHROPIC", "GOOGLE_GEMINI", "OLLAMA", "AWS_BEDROCK", "DEEPSEEK"]
+ACCEPTED_PROVIDERS = ["OPENAI", "ANTHROPIC", "GOOGLE_GEMINI", "OLLAMA", "AWS_BEDROCK", "DEEPSEEK", "MISTRAL", "GITHUB_AI"]
 TEMPLATES_PATH = os.path.join(sys.prefix, 'llmquery-templates')
 
 def find_templates_path():
@@ -42,6 +44,8 @@ class LLMQuery(object):
                  anthropic_api_key: str = None,
                  google_gemini_api_key: str = None,
                  deepseek_api_key: str = None,
+                 mistral_api_key: str = None,
+                 github_token: str = None,
                  model: str = None,
                  max_tokens: int = 8192,
                  max_length: int = 2048,
@@ -57,6 +61,8 @@ class LLMQuery(object):
         self.anthropic_api_key = anthropic_api_key
         self.google_gemini_api_key = google_gemini_api_key
         self.deepseek_api_key = deepseek_api_key
+        self.mistral_api_key = mistral_api_key
+        self.github_token = github_token
         self.model = model
         self.aws_bedrock_anthropic_version = aws_bedrock_anthropic_version
         self.aws_bedrock_region = aws_bedrock_region
@@ -140,5 +146,15 @@ class LLMQuery(object):
                                                      model=self.model,
                                                      system_prompt=self.template.rendered_system_prompt,
                                                      user_prompt=self.template.rendered_prompt)
+        elif self.provider == "MISTRAL":
+            return mistral.mistral_generate_content(mistral_api_key=self.mistral_api_key,
+                                                    model=self.model,
+                                                    system_prompt=self.template.rendered_system_prompt,
+                                                    user_prompt=self.template.rendered_prompt)
+        elif self.provider == "GITHUB_AI":
+            return github_ai.github_ai_generate_content(github_token=self.github_token,
+                                                        model=self.model,
+                                                        system_prompt=self.template.rendered_system_prompt,
+                                                        user_prompt=self.template.rendered_prompt)
         else:
             raise ValueError("Provider not supported.")
