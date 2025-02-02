@@ -14,10 +14,12 @@ DEFAULT_MODEL = "llama3.3"
 DEFAULT_SYSTEM_PROMPT = "You are a highly intelligent assistant. Respond to user queries with precise, well-informed answers on the first attempt. Tailor responses to the user's context and intent, using clear and concise language. Always prioritize relevance, accuracy, and value."
 
 
-def ollama_generate_content(url_endpoint: str = None,
-                            model: str = None,
-                            system_prompt: str = None,
-                            user_prompt: str = None):
+def ollama_generate_content(
+    url_endpoint: str = None,
+    model: str = None,
+    system_prompt: str = None,
+    user_prompt: str = None,
+):
 
     if not url_endpoint:
         url_endpoint = OLLAMA_API_ENDPOINT
@@ -37,20 +39,26 @@ def ollama_generate_content(url_endpoint: str = None,
         "model": model,
         "system": system_prompt,
         "prompt": user_prompt,
-        "stream": False
+        "stream": False,
     }
 
     response = requests.post(url_endpoint, headers=headers, json=data)
     if response.status_code != 200:
-        raise Exception(f"Failed to connect to OLLAMA API. Status code: {response.status_code}. Response: {response.text}")
+        raise Exception(
+            f"Failed to connect to OLLAMA API. Status code: {response.status_code}. Response: {response.text}"
+        )
 
-    output = {"raw_response": response,
-              "status_code": response.status_code,
-              "data": data,
-              "response": ""}
+    output = {
+        "raw_response": response,
+        "status_code": response.status_code,
+        "data": data,
+        "response": "",
+    }
 
     if "response" not in response.json():
-        raise Exception(f"Invalid response from OLLAMA API. Response: {response.json()}")
+        raise Exception(
+            f"Invalid response from OLLAMA API. Response: {response.json()}"
+        )
 
     output["response"] = response.json()["response"]
 

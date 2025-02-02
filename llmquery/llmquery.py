@@ -1,5 +1,6 @@
 import sys
 import os
+
 path = os.path.realpath(os.path.join(os.path.dirname(__file__)))
 path = os.path.realpath(os.path.dirname(path))
 sys.path.append(os.path.realpath(os.path.join(path, "providers")))
@@ -10,16 +11,28 @@ from google_gemini_lib import google_gemini
 from ollama_lib import ollama
 from aws_bedrock_lib import aws_bedrock
 from deepseek_lib import deepseek
+from mistral_lib import mistral
+from github_ai_models_lib import github_ai_models
 
-ACCEPTED_PROVIDERS = ["OPENAI", "ANTHROPIC", "GOOGLE_GEMINI", "OLLAMA", "AWS_BEDROCK", "DEEPSEEK"]
-TEMPLATES_PATH = os.path.join(sys.prefix, 'llmquery-templates')
+ACCEPTED_PROVIDERS = [
+    "OPENAI",
+    "ANTHROPIC",
+    "GOOGLE_GEMINI",
+    "OLLAMA",
+    "AWS_BEDROCK",
+    "DEEPSEEK",
+    "MISTRAL",
+    "GITHUB_AI",
+]
+TEMPLATES_PATH = os.path.join(sys.prefix, "llmquery-templates")
+
 
 def find_templates_path():
     possible_paths = [
-                      os.path.join(sys.prefix, 'share', 'llmquery-templates'),
-                      os.path.join(sys.prefix, 'share', 'llmquery', 'llmquery-templates'),
-                      os.path.realpath(os.path.join(path, "llmquery-templates")),
-                      os.path.realpath(os.path.join(path, "templates"))
+        os.path.join(sys.prefix, "share", "llmquery-templates"),
+        os.path.join(sys.prefix, "share", "llmquery", "llmquery-templates"),
+        os.path.realpath(os.path.join(path, "llmquery-templates")),
+        os.path.realpath(os.path.join(path, "templates")),
     ]
 
     if os.path.exists(TEMPLATES_PATH):
@@ -29,24 +42,30 @@ def find_templates_path():
             return p
     return None
 
+
 TEMPLATES_PATH = find_templates_path()
 
+
 class LLMQuery(object):
-    def __init__(self,
-                 provider: str = None,
-                 template_inline: str = None,
-                 templates_path: str = None,
-                 template_id: str = None,
-                 variables: dict = None,
-                 openai_api_key: str = None,
-                 anthropic_api_key: str = None,
-                 google_gemini_api_key: str = None,
-                 deepseek_api_key: str = None,
-                 model: str = None,
-                 max_tokens: int = 8192,
-                 max_length: int = 2048,
-                 aws_bedrock_anthropic_version: str = None,
-                 aws_bedrock_region: str = None):
+    def __init__(
+        self,
+        provider: str = None,
+        template_inline: str = None,
+        templates_path: str = None,
+        template_id: str = None,
+        variables: dict = None,
+        openai_api_key: str = None,
+        anthropic_api_key: str = None,
+        google_gemini_api_key: str = None,
+        deepseek_api_key: str = None,
+        mistral_api_key: str = None,
+        github_token: str = None,
+        model: str = None,
+        max_tokens: int = 8192,
+        max_length: int = 2048,
+        aws_bedrock_anthropic_version: str = None,
+        aws_bedrock_region: str = None,
+    ):
         self.template = None
         provider = provider.upper()
         if provider not in ACCEPTED_PROVIDERS:
@@ -57,16 +76,22 @@ class LLMQuery(object):
         self.anthropic_api_key = anthropic_api_key
         self.google_gemini_api_key = google_gemini_api_key
         self.deepseek_api_key = deepseek_api_key
+        self.mistral_api_key = mistral_api_key
+        self.github_token = github_token
         self.model = model
         self.aws_bedrock_anthropic_version = aws_bedrock_anthropic_version
         self.aws_bedrock_region = aws_bedrock_region
         self.max_tokens = max_tokens
 
         if template_inline and templates_path:
-            raise ValueError("You cannot specify both 'template_inline' and 'templates_path' parameters.")
+            raise ValueError(
+                "You cannot specify both 'template_inline' and 'templates_path' parameters."
+            )
 
         if not template_inline and not templates_path:
-            raise ValueError("You must specify either 'template_inline' or 'templates_path' parameter.")
+            raise ValueError(
+                "You must specify either 'template_inline' or 'templates_path' parameter."
+            )
         if template_inline:
             self.template = template_inline
             self.template = parser.Template(inline=self.template, variables=variables)
@@ -77,13 +102,17 @@ class LLMQuery(object):
 
         if templates_path:
             self.templates = parser.load_templates(templates_path)
-            self.templates = parser.filter_invalid_templates(self.templates, variables=self.variables)
+            self.templates = parser.filter_invalid_templates(
+                self.templates, variables=self.variables
+            )
 
         if len(self.templates) == 1:
             self.template = self.templates[0]
 
         if len(self.templates) > 1 and not template_id:
-            raise ValueError("Multiple templates found. You must specify a 'template_id' parameter.")
+            raise ValueError(
+                "Multiple templates found. You must specify a 'template_id' parameter."
+            )
 
         if template_id:
             for t in self.templates:
@@ -93,52 +122,88 @@ class LLMQuery(object):
         if not self.template:
             raise ValueError("Template not found.")
 
-        self.prompt_tokens = parser.get_prompt_tokens_count(self.template.rendered_prompt)
-        self.system_prompt_tokens = parser.get_prompt_tokens_count(self.template.rendered_system_prompt)
+        self.prompt_tokens = parser.get_prompt_tokens_count(
+            self.template.rendered_prompt
+        )
+        self.system_prompt_tokens = parser.get_prompt_tokens_count(
+            self.template.rendered_system_prompt
+        )
         self.total_tokens = self.prompt_tokens + self.system_prompt_tokens
         if self.total_tokens > max_tokens:
-            raise ValueError(f"Total tokens ({self.total_tokens}) exceed the maximum tokens allowed ({max_tokens}).")
+            raise ValueError(
+                f"Total tokens ({self.total_tokens}) exceed the maximum tokens allowed ({max_tokens})."
+            )
 
-        self.total_length = len(self.template.rendered_prompt) + len(self.template.rendered_system_prompt)
+        self.total_length = len(self.template.rendered_prompt) + len(
+            self.template.rendered_system_prompt
+        )
         if self.total_length > max_length:
-            raise ValueError(f"Total length ({self.total_length}) exceed the maximum length allowed ({max_length}).")
+            raise ValueError(
+                f"Total length ({self.total_length}) exceed the maximum length allowed ({max_length})."
+            )
 
     def set_variables(self, variables):
         self.variables.update(variables)
 
     def Query(self):
         if self.provider == "OPENAI":
-            return openai.openai_chat_completion(openai_api_key=self.openai_api_key,
-                                                 model=self.model,
-                                                 system_prompt=self.template.rendered_system_prompt,
-                                                 user_prompt=self.template.rendered_prompt)
+            return openai.openai_chat_completion(
+                openai_api_key=self.openai_api_key,
+                model=self.model,
+                system_prompt=self.template.rendered_system_prompt,
+                user_prompt=self.template.rendered_prompt,
+            )
         elif self.provider == "ANTHROPIC":
-            return anthropic_claude.anthropic_cluade_message(anthropic_api_key=self.anthropic_api_key,
-                                                             model=self.model,
-                                                             system_prompt=self.template.rendered_system_prompt,
-                                                             user_prompt=self.template.rendered_prompt)
+            return anthropic_claude.anthropic_cluade_message(
+                anthropic_api_key=self.anthropic_api_key,
+                model=self.model,
+                system_prompt=self.template.rendered_system_prompt,
+                user_prompt=self.template.rendered_prompt,
+            )
         elif self.provider == "GOOGLE_GEMINI":
-            return google_gemini.google_gemini_generate_content(url_endpoint=None,
-                                                                google_gemini_api_key=self.google_gemini_api_key,
-                                                                model=self.model,
-                                                                system_prompt=self.template.rendered_system_prompt,
-                                                                user_prompt=self.template.rendered_prompt)
+            return google_gemini.google_gemini_generate_content(
+                url_endpoint=None,
+                google_gemini_api_key=self.google_gemini_api_key,
+                model=self.model,
+                system_prompt=self.template.rendered_system_prompt,
+                user_prompt=self.template.rendered_prompt,
+            )
         elif self.provider == "OLLAMA":
-            return ollama.ollama_generate_content(url_endpoint=None,
-                                                  model=self.model,
-                                                  system_prompt=self.template.rendered_system_prompt,
-                                                  user_prompt=self.template.rendered_prompt)
+            return ollama.ollama_generate_content(
+                url_endpoint=None,
+                model=self.model,
+                system_prompt=self.template.rendered_system_prompt,
+                user_prompt=self.template.rendered_prompt,
+            )
         elif self.provider == "AWS_BEDROCK":
-            return aws_bedrock.aws_bedrock_generate_content(model=self.model,
-                                                            system_prompt=self.template.rendered_system_prompt,
-                                                            user_prompt=self.template.rendered_prompt,
-                                                            anthropic_version=self.aws_bedrock_anthropic_version,
-                                                            aws_region=self.aws_bedrock_region,
-                                                            max_tokens=self.max_tokens)
+            return aws_bedrock.aws_bedrock_generate_content(
+                model=self.model,
+                system_prompt=self.template.rendered_system_prompt,
+                user_prompt=self.template.rendered_prompt,
+                anthropic_version=self.aws_bedrock_anthropic_version,
+                aws_region=self.aws_bedrock_region,
+                max_tokens=self.max_tokens,
+            )
         elif self.provider == "DEEPSEEK":
-            return deepseek.deepseek_generate_content(deepseek_api_key=self.deepseek_api_key,
-                                                     model=self.model,
-                                                     system_prompt=self.template.rendered_system_prompt,
-                                                     user_prompt=self.template.rendered_prompt)
+            return deepseek.deepseek_generate_content(
+                deepseek_api_key=self.deepseek_api_key,
+                model=self.model,
+                system_prompt=self.template.rendered_system_prompt,
+                user_prompt=self.template.rendered_prompt,
+            )
+        elif self.provider == "MISTRAL":
+            return mistral.mistral_generate_content(
+                mistral_api_key=self.mistral_api_key,
+                model=self.model,
+                system_prompt=self.template.rendered_system_prompt,
+                user_prompt=self.template.rendered_prompt,
+            )
+        elif self.provider == "GITHUB_AI" or self.provider == "GITHUB_AI_MODELS":
+            return github_ai_models.github_ai_generate_content(
+                github_token=self.github_token,
+                model=self.model,
+                system_prompt=self.template.rendered_system_prompt,
+                user_prompt=self.template.rendered_prompt,
+            )
         else:
             raise ValueError("Provider not supported.")

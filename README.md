@@ -2,7 +2,6 @@
     <img src="https://raw.githubusercontent.com/mazen160/public/refs/heads/master/static/images/llmquery-logo-3.png" alt="llmquery logo">
 </p>
 
-
 <h1 align="center">🌐 llmquery: Scaling GenAI automation 🌐</h1>
 <h2 align="center">Powerful LLM Query Framework with YAML Prompt Templates</h2>
 <h3 align="center"><a href="https://mazinahmed.net/blog/llmquery-project/">Read the release blog post</a></h3>
@@ -11,7 +10,7 @@
 
 # 🚀 What is llmquery?
 
-`llmquery` is a comprehensive framework for interacting with Language Model APIs, such as OpenAI, Anthropic, Google Gemini, AWS Bedrock, DeepSeek, and Ollama. It leverages standard YAML templates for prompt management, validation, and dynamic generation. Designed to streamline complex workflows, it allows developers to integrate, query, and test LLMs with ease.
+`llmquery` is a comprehensive framework for interacting with Language Model APIs, such as OpenAI, Anthropic, DeepSeek, Google Gemini, AWS Bedrock, Mistral, Github AI Models, and Ollama. It leverages standard YAML templates for prompt management, validation, and dynamic generation. Designed to streamline complex workflows, it allows developers to integrate, query, and test LLMs with ease.
 
 Whether you’re building a chatbot, generating creative content, or analyzing data, `llmquery` provides the tools to standardize and optimize LLM interactions.
 
@@ -25,9 +24,9 @@ This is an example where llmquery runs with `detect-security-vulnerabilities` te
 
 # Why llmquery?
 
-Language models have become integral to modern applications, but efficiently managing and interacting with multiple providers can be challenging. `llmquery` solves this by offering:
+Language models have become integral to modern applications, but efficiently managing and interacting with several providers can be challenging. `llmquery` solves this by offering:
 
-- **Provider-Agnostic Queries**: Support for multiple providers, including OpenAI, Anthropic, Google Gemini, AWS Bedrock, and Ollama.
+- **Provider-Agnostic Queries**: Support for several providers, including OpenAI, DeepSeek, Anthropic, Google Gemini, AWS Bedrock, Mistral, GitHub AI Models, and Ollama.
 - **Templated Workflows**: Use YAML-based templates to define dynamic prompts and system configurations.
 - **Validation and Error Handling**: Ensure templates are validated, token limits are checked, and errors are surfaced with actionable messages.
 - **Extensibility**: Easily extend to support new providers or integrate with custom workflows.
@@ -36,7 +35,7 @@ Language models have become integral to modern applications, but efficiently man
 
 # 💡 Key Features
 
-- **Multi-Provider Support**: Interact seamlessly with OpenAI, Anthropic, Google Gemini, AWS Bedrock, and Ollama models.
+- **Multi-Provider Support**: Interact seamlessly with OpenAI, DeepSeek, Anthropic, Google Gemini, AWS Bedrock, Mistral, GitHub AI Models, and Ollama.
 - **YAML-Based Prompt Management**: Define, validate, and render prompts dynamically.
 - **Token & Length Validation**: Prevent token limit errors with built-in checks.
 - **Error Handling**: Comprehensive handling of common API and template issues.
@@ -48,7 +47,6 @@ Language models have become integral to modern applications, but efficiently man
 
 View the full documentation at the [llmquery documentation](https://github.com/mazen160/llmquery/blob/main/docs/).
 
-
 ## Installation
 
 ```bash
@@ -56,6 +54,7 @@ $ pip install llmquery
 ```
 
 or manually:
+
 ```bash
 $ git clone https://github.com/mazen160/llmquery.git
 $ cd llmquery
@@ -111,8 +110,6 @@ response = query.Query()
 print(response)
 ```
 
-
-
 ## CLI Usage
 
 ```bash
@@ -129,15 +126,15 @@ Scaling GenAI automation 🚀🌐
                                ▀▀
 
 
-usage: llmquery [-h] [--provider {OPENAI,ANTHROPIC,GOOGLE_GEMINI,OLLAMA}] [--templates-path TEMPLATES_PATH] [--template-id TEMPLATE_ID] [--variables VARIABLES]
+usage: llmquery [-h] [--provider {OPENAI,ANTHROPIC,GOOGLE_GEMINI,AWS_BEDROCK,OLLAMA,DEEPSEEK,MISTRAL,GITHUB_AI}] [--templates-path TEMPLATES_PATH] [--template-id TEMPLATE_ID] [--variables VARIABLES]
                 [--variables-file VARIABLES_FILE] [--model MODEL] [--max-tokens MAX_TOKENS] [--max-length MAX_LENGTH] [--api-key API_KEY]
 
 [bold cyan]A CLI for querying LLMs using YAML templates with llmquery.[/bold cyan]
 
 options:
   -h, --help            show this help message and exit
-  --provider {OPENAI,ANTHROPIC,GOOGLE_GEMINI,AWS_BEDROCK,OLLAMA,DEEPSEEK}
-                        Specify the LLM provider to use (e.g. OPENAI, ANTHROPIC, GOOGLE_GEMINI, AWS_BEDROCK, OLLAMA, DEEPSEEK).
+  --provider {OPENAI,ANTHROPIC,GOOGLE_GEMINI,AWS_BEDROCK,OLLAMA,DEEPSEEK,MISTRAL,GITHUB_AI}
+                        Specify the LLM provider to use (e.g. OPENAI, ANTHROPIC, GOOGLE_GEMINI, AWS_BEDROCK, OLLAMA, DEEPSEEK, MISTRAL, GITHUB_AI).
   --templates-path TEMPLATES_PATH
                         Path to the YAML templates directory defining the query.
   --template-id TEMPLATE_ID
@@ -159,7 +156,7 @@ $ llmquery --provider OPENAI --template ./llmquery-templates/chat-template.yaml 
   --variables '{"user_input": "What is AI?"}' --api-key your-api-key --model gpt-4
 ```
 
-The `llmquery` CLI  provides a command-line interface for interacting with Language Model APIs. The tool simplifies querying large language models by using YAML templates. This can used for various applications such as automation, testing, and scripting.
+The `llmquery` CLI provides a command-line interface for interacting with Language Model APIs. The tool simplifies querying large language models by using YAML templates. This can used for various applications such as automation, testing, and scripting.
 
 ---
 
@@ -174,20 +171,24 @@ The `llmquery` binary is executed from the command line and supports various opt
 ### General Options
 
 - `--provider`
+
   - **Description**: Specifies the LLM provider to use.
-  - **Accepted Values**: `OPENAI`, `ANTHROPIC`, `GOOGLE_GEMINI`, `AWS_BEDROCK`, `OLLAMA`, `DEEPSEEK`
+  - **Accepted Values**: `OPENAI`, `ANTHROPIC`, `GOOGLE_GEMINI`, `AWS_BEDROCK`, `OLLAMA`, `DEEPSEEK`, `MISTRAL`, `GITHUB_AI`
   - **Example**: `--provider OPENAI`
 
 - `--templates-path`
+
   - **Description**: Path to the directory containing YAML templates.
   - **Default**: Set by the `llmquery` framework.
   - **Example**: `--templates-path ./llmquery-templates`
 
 - `--template-id`
+
   - **Description**: Specifies a template ID for cases with multiple templates.
   - **Example**: `--template-id general-query`
 
 - `--variables`
+
   - **Description**: JSON string defining variables to pass to the selected template.
   - **Example**: `--variables '{"user_input": "Hello"}'`
 
@@ -198,16 +199,19 @@ The `llmquery` binary is executed from the command line and supports various opt
 ### Model and API Options
 
 - `--model`
+
   - **Description**: Specifies the model to query.
   - **Default**: Set by the `LLMQUERY_MODEL` environment variable.
   - **Example**: `--model gpt-4`
 
 - `--max-tokens`
+
   - **Description**: Maximum number of tokens for the response.
   - **Default**: `8192`
   - **Example**: `--max-tokens 2048`
 
 - `--max-length`
+
   - **Description**: Maximum character length for the prompt.
   - **Default**: `2048`
   - **Example**: `--max-length 1024`
@@ -241,7 +245,6 @@ llmquery --provider GOOGLE_GEMINI --templates-path ./llmquery-templates \
   --template-id translate-task --variables '{"text": "Hello", "language": "French"}' \
   --api-key YOUR_API_KEY --model gemini-latest --max-tokens 1000
 ```
-
 
 ---
 
@@ -292,43 +295,57 @@ query = LLMQuery(
 
 print(query.Query())
 ```
+
 # ⚙️ Environment Variables
 
-
 - `OPENAI_API_KEY`
+
   - **Description**: API key for the OpenAI provider.
   - **Example**: `export OPENAI_API_KEY="API_KEY"`
 
 - `ANTHROPIC_API_KEY`
+
   - **Description**: API key for the Anthropic provider.
   - **Example**: `export ANTHROPIC_API_KEY="API_KEY"`
 
 - `GOOGLE_GEMINI_API_KEY`
+
   - **Description**: API key for the Google Gemini provider.
   - **Example**: `export GOOGLE_GEMINI_API_KEY="API_KEY"`
 
 - `AWS_ACCESS_KEY_ID`
+
   - **Description**: AWS access key ID for AWS Bedrock provider.
   - **Example**: `export AWS_ACCESS_KEY_ID="ACCESS_KEY"`
 
 - `AWS_SECRET_ACCESS_KEY`
+
   - **Description**: AWS secret access key for AWS Bedrock provider.
   - **Example**: `export AWS_SECRET_ACCESS_KEY="SECRET_KEY"`
 
 - `AWS_SESSION_TOKEN`
+
   - **Description**: AWS session token for temporary credentials with AWS Bedrock provider.
   - **Example**: `export AWS_SESSION_TOKEN="SESSION_TOKEN"`
 
 - `AWS_DEFAULT_REGION`
   - **Description**: Default AWS region for AWS Bedrock provider.
   - **Example**: `export AWS_DEFAULT_REGION="us-east-1"`
-  
 - Check the full list of environment variables at `example.env`.
 
 - `DEEPSEEK_API_KEY`
+
   - **Description**: API key for the DeepSeek provider.
   - **Example**: `export DEEPSEEK_API_KEY="API_KEY"`
 
+- `MISTRAL_API_KEY`
+
+  - **Description**: API key for Mistral AI provider
+  - **Example**: `export MISTRAL_API_KEY="API_KEY"`
+
+- `GITHUB_TOKEN`
+  - **Description**: Github access token for GitHub AI Models
+  - **Example**: `export GITHUB_TOKEN="GITHUB_TOKEN"`
 
 ---
 
@@ -336,9 +353,7 @@ print(query.Query())
 
 `llmquery` has a collection of well-tested LLM Prompts Templates for various use-cases, including Application Security, AI Security, Code Reviews, Developer Velocity, and general cases. You can check the templates at the `./llmquery-templates` directory. All templates are bundled within llmquery, and can be accessed directly when refrencing the template ID.
 
-
 Templates are powered by Jinja2, a Turing-complete template engine. This allows for the creation of dynamic and flexible templates through the use of conditional statements, loops, functions, and other advanced constructs.
-
 
 View the full templates documentation at the [llmquery templates documentation](https://github.com/mazen160/llmquery/blob/master/docs/templates.md).
 
@@ -357,7 +372,6 @@ We're always looking for contributions! Here are some ideas to get started:
 Feel free to create issues, submit pull requests, or suggest enhancements on GitHub.
 
 ---
-
 
 # 📄 License
 

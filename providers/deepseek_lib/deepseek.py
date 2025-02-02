@@ -22,12 +22,14 @@ DEFAULT_MODEL = "deepseek-chat"
 DEFAULT_SYSTEM_PROMPT = "You are a highly intelligent assistant. Respond to user queries with precise, well-informed answers on the first attempt. Tailor responses to the user's context and intent, using clear and concise language. Always prioritize relevance, accuracy, and value."
 
 
-def deepseek_generate_content(url_endpoint: str = None,
-                            deepseek_api_key: str = None,
-                            model: str = None,
-                            system_prompt: str = None,
-                            user_prompt: str = None):
-    
+def deepseek_generate_content(
+    url_endpoint: str = None,
+    deepseek_api_key: str = None,
+    model: str = None,
+    system_prompt: str = None,
+    user_prompt: str = None,
+):
+
     if not url_endpoint:
         url_endpoint = DEEPSEEK_API_ENDPOINT
     if not model:
@@ -42,39 +44,44 @@ def deepseek_generate_content(url_endpoint: str = None,
         raise ValueError("User prompt is required.")
 
     if model not in ACCEPTED_MODELS:
-        raise ValueError(f"Model {model} is not supported. Supported models are: {ACCEPTED_MODELS}")
+        raise ValueError(
+            f"Model {model} is not supported. Supported models are: {ACCEPTED_MODELS}"
+        )
 
     headers = {
         "Content-Type": "application/json",
-        "Authorization": f"Bearer {deepseek_api_key}"
+        "Authorization": f"Bearer {deepseek_api_key}",
     }
 
     data = {
         "model": model,
         "messages": [
             {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_prompt}
+            {"role": "user", "content": user_prompt},
         ],
-        "stream": False
+        "stream": False,
     }
 
     response = requests.post(url_endpoint, headers=headers, json=data)
     if response.status_code != 200:
-        raise Exception(f"Failed to connect to DeepSeek API. Status code: {response.status_code}. Response: {response.text}")
+        raise Exception(
+            f"Failed to connect to DeepSeek API. Status code: {response.status_code}. Response: {response.text}"
+        )
 
     output = {
         "raw_response": response,
         "status_code": response.status_code,
         "data": data,
-        "response": ""
+        "response": "",
     }
 
     response_json = response.json()
     if not response_json.get("choices"):
-        raise Exception(f"Invalid response from DeepSeek API. Response: {response_json}")
+        raise Exception(
+            f"Invalid response from DeepSeek API. Response: {response_json}"
+        )
 
     for choice in response_json.get("choices", []):
         output["response"] += choice.get("message", {}).get("content", "")
 
     return output
-
