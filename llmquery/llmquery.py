@@ -67,7 +67,7 @@ class LLMQuery(object):
         max_tokens: int = 8192,
         max_length: int = 2048,
         url_endpoint: str = None,
-        aws_bedrock_anthropic_version: str = None,
+        aws_bedrock_anthropic_version: str = os.getenv("AWS_BEDROCK_ANTHROPIC_VERSION"),
         aws_bedrock_region: str = os.getenv("AWS_REGION"),
         aws_access_key_id: str = os.getenv("AWS_ACCESS_KEY_ID"),
         aws_secret_access_key: str = os.getenv("AWS_SECRET_ACCESS_KEY"),
@@ -80,7 +80,9 @@ class LLMQuery(object):
         self.variables = variables or {}
         self.template_inline = template_inline
         self.max_length = max_length
+        self.max_tokens = max_tokens
         self.template = None
+        self.templates = []
         if provider is None:
             raise ValueError("Provider must be specified through parameter or LLMQUERY_PROVIDER environment variable")
         provider = provider.upper()
@@ -100,15 +102,13 @@ class LLMQuery(object):
         self.max_tokens = max_tokens
         self.url_endpoint = url_endpoint
 
-        if type(variables) is not dict:
+        if type(self.variables) is not dict:
             raise ValueError("The 'variables' parameter must be a dictionary.")
-        self.variables = variables
 
     def set_variables(self, variables):
         self.variables.update(variables)
 
     def Query(self):
-        self.templates = []
         if self.templates_path:
             self.templates = parser.load_templates(self.templates_path)
             self.templates = parser.filter_invalid_templates(
@@ -147,14 +147,14 @@ class LLMQuery(object):
         if not self.template:
             raise ValueError("Template not found.")
 
-        if self.template_inline and self.templates_path:
+        if self.template_inline and self.templates:
             raise ValueError(
-                "You cannot specify both 'template_inline' and 'templates_path' parameters."
+                "You cannot specify both 'template_inline' and set templates-path parameters."
             )
 
-        if not self.template_inline and not self.templates_path:
+        if not self.template_inline and not self.templates:
             raise ValueError(
-                "You must specify either 'template_inline' or 'templates_path' parameter."
+                "You must specify either 'template_inline' or templates-path parameters."
             )
         
         if self.template_inline:
@@ -240,7 +240,7 @@ class LLMQuery(object):
                 system_prompt=system_prompt,
                 user_prompt=user_prompt
             )
-        elif self.provider == "GITHUB_AI":
+        elif self.provider == "GITHUB_AI" or self.provider == "GITHUB_AI_MODELS":
             return github_ai_models.github_ai_generate_content(
                 url_endpoint=self.url_endpoint,
                 github_token=self.github_token,

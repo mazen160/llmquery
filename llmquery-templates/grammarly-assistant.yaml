@@ -54,12 +54,36 @@ prompt: >
     
     **Editing Instructions:** {{ instruction }}
     
-    Respond in JSON format:
+    **Provide the response in JSON format with a structured list of improvements. Each improvement should focus on a single specific change.** 
+    
+    **Response format:**
     {
       "corrected_text": "EDITED TEXT",
-      "explanations": ["EXPLANATION_1", "EXPLANATION_2"]
+      "improvements": [
+        { "change": "Grammar Correction", "original": "ORIGINAL TEXT", "corrected": "CORRECTED TEXT", "explanation": "Reason for the change." },
+        { "change": "Spelling Fix", "original": "ORIGINAL WORD", "corrected": "CORRECTED WORD", "explanation": "Reason for the change." },
+        { "change": "Clarity Improvement", "original": "ORIGINAL PHRASE", "corrected": "CORRECTED PHRASE", "explanation": "Reason for the change." }
+      ]
     }
 
 variables:
-    text: "Enter your text here."
+    text: "Their was a lot of people at the park yesterday, and it was really noisy. Me and my friend was trying to find a quite spot to sit, but everywhere was crowded. We seen a dog running around without it's owner, wich seemed kind of worrying. After some time, we finally found a bench, but it was dirty so we had to clean it with are napkins before sitting. Overall, it was a fun day but could of been more relaxing."
     instruction: "Fix grammar and improve clarity."
+
+# Example Instructions:
+# Fix grammar and improve clarity.
+# Fix grammar, spelling, and punctuation only.
+# Fix grammar and explain each correction.
+# Improve clarity and sentence structure.
+# Enhance style for a formal/professional tone.
+# Make it more conversational and engaging.
+# Rewrite for a friendlier and more approachable tone.
+# Optimize for a marketing/sales message.
+# Make it sound more academic and sophisticated.
+# Simplify the language for better readability.
+# Reformat for a concise Slack message.
+# Expand ideas for a more detailed explanation.
+# Make it more persuasive and compelling.
+# Ensure gender-neutral and inclusive language.
+# Adapt for storytelling and better narrative flow.
+# Summarize while keeping key points intact.

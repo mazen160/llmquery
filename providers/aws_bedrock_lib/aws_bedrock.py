@@ -24,7 +24,7 @@ def aws_bedrock_generate_content(
     user_prompt: str = None,
     aws_region: str = None,
     max_tokens: int = MAX_TOKENS,
-    anthropic_version: str = ANTHROPIC_VERSION,
+    anthropic_version: str = None,
 ) -> Dict[str, Any]:
     """
     Generate content using AWS Bedrock's models.
@@ -47,6 +47,8 @@ def aws_bedrock_generate_content(
         raise ValueError(
             f"Model {model} is not supported. Supported models are: {ALLOWED_MODELS}"
         )
+    if not anthropic_version:
+        anthropic_version = ANTHROPIC_VERSION
 
     if not user_prompt:
         raise ValueError("User prompt is required.")
@@ -78,6 +80,7 @@ def aws_bedrock_generate_content(
             }
         ],
     }
+    print(payload)
 
     response = bedrock_runtime.invoke_model(
         modelId=model,

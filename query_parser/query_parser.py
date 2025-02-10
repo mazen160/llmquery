@@ -77,7 +77,7 @@ class Template(object):
 
 
 def check_unique_ids(templates):
-    ids = [t["id"] for t in templates]
+    ids = [t.id for t in templates]
     if len(ids) != len(set(ids)):
         raise ValueError("Templates have duplicate IDs.")
 
