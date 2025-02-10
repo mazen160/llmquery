@@ -80,7 +80,6 @@ def aws_bedrock_generate_content(
             }
         ],
     }
-    print(payload)
 
     response = bedrock_runtime.invoke_model(
         modelId=model,
