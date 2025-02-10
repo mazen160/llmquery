@@ -15,6 +15,8 @@ ANTHROPIC_VERSION = "bedrock-2023-05-31"
 DEFAULT_TEMPERATURE = 1.0
 DEFAULT_TOP_K = 250
 DEFAULT_TOP_P = 0.999
+DEFAULT_SYSTEM_PROMPT = "You are a highly intelligent assistant. Respond to user queries with precise, well-informed answers on the first attempt. Tailor responses to the user's context and intent, using clear and concise language. Always prioritize relevance, accuracy, and value."
+
 
 def aws_bedrock_generate_content(
     model: str = None,
@@ -49,13 +51,16 @@ def aws_bedrock_generate_content(
     if not user_prompt:
         raise ValueError("User prompt is required.")
 
+    if not system_prompt:
+        system_prompt = DEFAULT_SYSTEM_PROMPT
+
     region = aws_region or AWS_REGION
 
     # Initialize AWS Bedrock runtime client
     bedrock_runtime = boto3.client(service_name="bedrock-runtime", region_name=region)
 
     payload = {
-        "anthropic_version": anthropic_version, 
+        "anthropic_version": anthropic_version,
         "max_tokens": max_tokens,
         "system": system_prompt,
         "temperature": DEFAULT_TEMPERATURE,
@@ -67,7 +72,7 @@ def aws_bedrock_generate_content(
                 "content": [
                     {
                         "type": "text",
-                        "text": user_prompt,  
+                        "text": user_prompt,
                     }
                 ],
             }

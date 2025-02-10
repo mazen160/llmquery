@@ -25,6 +25,7 @@ ACCEPTED_PROVIDERS = [
     "GITHUB_AI",
 ]
 TEMPLATES_PATH = os.path.join(sys.prefix, "llmquery-templates")
+DEFAULT_SYSTEM_PROMPT = "You are a highly intelligent assistant. Respond to user queries with precise, well-informed answers on the first attempt. Tailor responses to the user's context and intent, using clear and concise language. Always prioritize relevance, accuracy, and value."
 
 
 def find_templates_path():
@@ -65,12 +66,20 @@ class LLMQuery(object):
         model: str = os.getenv("LLMQUERY_MODEL"),
         max_tokens: int = 8192,
         max_length: int = 2048,
+        url_endpoint: str = None,
         aws_bedrock_anthropic_version: str = None,
         aws_bedrock_region: str = os.getenv("AWS_REGION"),
         aws_access_key_id: str = os.getenv("AWS_ACCESS_KEY_ID"),
         aws_secret_access_key: str = os.getenv("AWS_SECRET_ACCESS_KEY"),
         aws_session_token: str = os.getenv("AWS_SESSION_TOKEN"),
     ):
+        self.templates_path = templates_path
+        self.templates_path_public = templates_path_public
+        self.templates_path_private = templates_path_private
+        self.template_id = template_id
+        self.variables = variables or {}
+        self.template_inline = template_inline
+        self.max_length = max_length
         self.template = None
         provider = provider.upper()
         if provider not in ACCEPTED_PROVIDERS:
@@ -87,39 +96,27 @@ class LLMQuery(object):
         self.aws_bedrock_anthropic_version = aws_bedrock_anthropic_version
         self.aws_bedrock_region = aws_bedrock_region
         self.max_tokens = max_tokens
+        self.url_endpoint = url_endpoint
 
-        if template_inline and templates_path:
-            raise ValueError(
-                "You cannot specify both 'template_inline' and 'templates_path' parameters."
-            )
+    def set_variables(self, variables):
+        self.variables.update(variables)
 
-        if not template_inline and not templates_path:
-            raise ValueError(
-                "You must specify either 'template_inline' or 'templates_path' parameter."
-            )
-        if template_inline:
-            self.template = template_inline
-            self.template = parser.Template(inline=self.template, variables=variables)
-
-        if type(variables) is not dict:
-            raise ValueError("The 'variables' parameter must be a dictionary.")
-        self.variables = variables
-
-        if templates_path:
-            self.templates = parser.load_templates(templates_path)
+    def Query(self):
+        if self.templates_path:
+            self.templates = parser.load_templates(self.templates_path)
             self.templates = parser.filter_invalid_templates(
                 self.templates, variables=self.variables
             )
 
-        if templates_path_public:
-            templates_public = parser.load_templates(templates_path_public)
+        if self.templates_path_public:
+            templates_public = parser.load_templates(self.templates_path_public)
             templates_public = parser.filter_invalid_templates(
                 templates_public, variables=self.variables
             )
             self.templates.extend(templates_public)
 
-        if templates_path_private:
-            templates_private = parser.load_templates(templates_path_private)
+        if self.templates_path_private:
+            templates_private = parser.load_templates(self.templates_path_private)
             templates_private = parser.filter_invalid_templates(
                 templates_private, variables=self.variables
             )
@@ -130,134 +127,120 @@ class LLMQuery(object):
 
         parser.check_unique_ids(self.templates)
 
-        if len(self.templates) > 1 and not template_id:
+        if len(self.templates) > 1 and not self.template_id:
             raise ValueError(
                 "Multiple templates found. You must specify a 'template_id' parameter."
             )
 
-        if template_id:
+        if self.template_id:
             for t in self.templates:
-                if t.id == template_id:
+                if t.id == self.template_id:
                     self.template = t
                     break
         if not self.template:
             raise ValueError("Template not found.")
 
-        self.prompt_tokens = parser.get_prompt_tokens_count(
-            self.template.rendered_prompt
-        )
-        self.system_prompt_tokens = parser.get_prompt_tokens_count(
-            self.template.rendered_system_prompt
-        )
-        self.total_tokens = self.prompt_tokens + self.system_prompt_tokens
-        if self.total_tokens > max_tokens:
+        if self.template_inline and self.templates_path:
             raise ValueError(
-                f"Total tokens ({self.total_tokens}) exceed the maximum tokens allowed ({max_tokens})."
+                "You cannot specify both 'template_inline' and 'templates_path' parameters."
             )
 
-        self.total_length = len(self.template.rendered_prompt) + len(
-            self.template.rendered_system_prompt
-        )
-        if self.total_length > max_length:
+        if not self.template_inline and not self.templates_path:
             raise ValueError(
-                f"Total length ({self.total_length}) exceed the maximum length allowed ({max_length})."
+                "You must specify either 'template_inline' or 'templates_path' parameter."
+            )
+        if self.template_inline:
+            self.template = self.template_inline
+            self.template = parser.Template(
+                inline=self.template, variables=self.variables
             )
 
-    def set_variables(self, variables):
-        self.variables.update(variables)
-
-    def Query(self):
-        """Execute the query using the processed template"""
-        return self.raw_query(
+        return self.RawQuery(
             system_prompt=self.template.rendered_system_prompt,
-            user_prompt=self.template.rendered_prompt
+            user_prompt=self.template.rendered_prompt,
         )
 
-    def raw_query(
-        self,
-        system_prompt: str = None,
-        user_prompt: str = None,
-        provider: str = None,
-        model: str = None,
-        max_tokens: int = None
-    ):
-        """Direct query execution without template processing"""
-        # Use instance values as defaults if not provided
-        provider = provider or self.provider
-        model = model or self.model
-        max_tokens = max_tokens or self.max_tokens
+    def RawQuery(self, system_prompt: str = None, user_prompt: str = None):
 
-        # Validation
         if not user_prompt:
             raise ValueError("user_prompt parameter is required")
+        if not system_prompt:
+            system_prompt = DEFAULT_SYSTEM_PROMPT
 
-        # Calculate token usage
-        prompt_tokens = parser.get_prompt_tokens_count(user_prompt)
-        system_prompt_tokens = parser.get_prompt_tokens_count(system_prompt or "")
-        total_tokens = prompt_tokens + system_prompt_tokens
-        
-        if total_tokens > max_tokens:
+        self.prompt_tokens = parser.get_prompt_tokens_count(user_prompt)
+        self.system_prompt_tokens = parser.get_prompt_tokens_count(system_prompt)
+        self.total_tokens = self.prompt_tokens + self.system_prompt_tokens
+        if self.total_tokens > self.max_tokens:
             raise ValueError(
-                f"Total tokens ({total_tokens}) exceed maximum allowed ({max_tokens})"
+                f"Total tokens ({self.total_tokens}) exceed the maximum tokens allowed ({self.max_tokens})."
+            )
+        self.total_length = len(user_prompt) + len(system_prompt)
+        if self.total_length > self.max_length:
+            raise ValueError(
+                f"Total length ({self.total_length}) exceed the maximum length allowed ({self.max_length})."
             )
 
         # Provider dispatch
-        if provider == "OPENAI":
+        if self.provider == "OPENAI":
             return openai.openai_chat_completion(
                 openai_api_key=self.openai_api_key,
-                model=model,
+                model=self.model,
                 system_prompt=system_prompt,
                 user_prompt=user_prompt,
             )
-        elif provider == "ANTHROPIC":
-            return anthropic_claude.anthropic_cluade_message(
+        elif self.provider == "ANTHROPIC":
+            return anthropic_claude.anthropic_claude_message(
+                url_endpoint=self.url_endpoint,
                 anthropic_api_key=self.anthropic_api_key,
-                model=model,
+                model=self.model,
                 system_prompt=system_prompt,
                 user_prompt=user_prompt,
             )
-        elif provider == "GOOGLE_GEMINI":
+        elif self.provider == "GOOGLE_GEMINI":
             return google_gemini.google_gemini_generate_content(
-                url_endpoint=None,
+                url_endpoint=self.url_endpoint,
                 google_gemini_api_key=self.google_gemini_api_key,
-                model=model,
+                model=self.model,
                 system_prompt=system_prompt,
                 user_prompt=user_prompt,
             )
-        elif provider == "OLLAMA":
+        elif self.provider == "OLLAMA":
             return ollama.ollama_generate_content(
-                url_endpoint=None,
-                model=model,
+                url_endpoint=self.url_endpoint,
+                model=self.model,
                 system_prompt=system_prompt,
                 user_prompt=user_prompt,
             )
-        elif provider == "AWS_BEDROCK":
+        elif self.provider == "AWS_BEDROCK":
             return aws_bedrock.aws_bedrock_generate_content(
-                model=model,
+                model=self.model,
                 system_prompt=system_prompt,
                 user_prompt=user_prompt,
                 anthropic_version=self.aws_bedrock_anthropic_version,
                 aws_region=self.aws_bedrock_region,
-                max_tokens=max_tokens,
+                max_tokens=self.max_tokens,
             )
-        elif provider == "DEEPSEEK":
+        elif self.provider == "DEEPSEEK":
             return deepseek.deepseek_generate_content(
+                url_endpoint=self.url_endpoint,
                 deepseek_api_key=self.deepseek_api_key,
-                model=model,
+                model=self.model,
                 system_prompt=system_prompt,
                 user_prompt=user_prompt,
             )
-        elif provider == "MISTRAL":
+        elif self.provider == "MISTRAL":
             return mistral.mistral_generate_content(
+                url_endpoint=self.url_endpoint,
                 mistral_api_key=self.mistral_api_key,
-                model=model,
+                model=self.model,
                 system_prompt=system_prompt,
                 user_prompt=user_prompt,
             )
-        elif provider == "GITHUB_AI" or provider == "GITHUB_AI_MODELS":
+        elif self.provider == "GITHUB_AI" or self.provider == "GITHUB_AI_MODELS":
             return github_ai_models.github_ai_generate_content(
+                url_endpoint=self.url_endpoint,
                 github_token=self.github_token,
-                model=model,
+                model=self.model,
                 system_prompt=system_prompt,
                 user_prompt=user_prompt,
             )
