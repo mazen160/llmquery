@@ -23,6 +23,7 @@ ACCEPTED_PROVIDERS = [
     "DEEPSEEK",
     "MISTRAL",
     "GITHUB_AI",
+    "GITHUB_AI_MODELS"
 ]
 TEMPLATES_PATH = os.path.join(sys.prefix, "llmquery-templates")
 DEFAULT_SYSTEM_PROMPT = "You are a highly intelligent assistant. Respond to user queries with precise, well-informed answers on the first attempt. Tailor responses to the user's context and intent, using clear and concise language. Always prioritize relevance, accuracy, and value."

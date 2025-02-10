@@ -14,9 +14,11 @@ The `LLMQuery` class is the core interface for interacting with various LLM prov
 
 | Parameter                       | Type   | Description                                                                                    | Required | Default              |
 | ------------------------------- | ------ | ---------------------------------------------------------------------------------------------- | -------- | -------------------- |
-| `provider`                      | `str`  | The LLM provider to query. Supported values: `OPENAI`, `ANTHROPIC`, `GOOGLE_GEMINI`, `OLLAMA`. | Yes      | None                 |
-| `templates_path`                | `str`  | Path to a YAML template directory or file defining the system and user prompts.                | No       | None                 |
-| `template_inline`               | `str`  | YAML template as a string (if not using `templates_path`).                                     | No       | None                 |
+| `provider`                      | `str`  | The LLM provider to query. Supported values: `OPENAI`, `ANTHROPIC`, `GOOGLE_GEMINI`, `OLLAMA`. | Yes      | `None` (from ENV)    |
+| `templates_path`                | `str`  | Legacy path to YAML template directory/file. Use `templates_path_public` instead.               | No      | `None` (from ENV)    |
+| `templates_path_public`         | `str`  | Path to public YAML template directory/file for system and user prompts.                        | No      | `None` (from ENV)    |
+| `templates_path_private`        | `str`  | Path to private YAML template directory/file that overrides public templates.                   | No      | `None` (from ENV)    |
+| `template_inline`               | `str`  | YAML template as a string (if not using template paths).                                        | No      | None                 |
 | `template_id`                   | `str`  | ID of the template to use when multiple templates exist in the file.                           | No       | None                 |
 | `variables`                     | `dict` | Key-value pairs for dynamic variables in the template.                                         | No       | `{}`                 |
 | `openai_api_key`                | `str`  | API key for OpenAI.                                                                            | No       | `None` (from ENV)    |
@@ -25,7 +27,7 @@ The `LLMQuery` class is the core interface for interacting with various LLM prov
 | `deepseek_api_key`              | `str`  | API key for DeepSeek.                                                                          | No       | `None` (from ENV)    |
 | `mistral_api_key`               | `str`  | API key for Mistral.                                                                           | No       | `None` (from ENV)    |
 | `github_token`                  | `str`  | GitHub token for GitHub AI Models.                                                             | No       | `None` (from ENV)    |
-| `model`                         | `str`  | The model to use for the query (e.g., `gpt-4`).                                                | Yes      | None                 |
+| `model`                         | `str`  | The model to use for the query (e.g., `gpt-4`).                                                | Yes      | `None` (from ENV)    |
 | `max_tokens`                    | `int`  | Maximum number of tokens for the response.                                                     | No       | 8192                 |
 | `max_length`                    | `int`  | Maximum character length for the prompt.                                                       | No       | 2048                 |
 | `aws_bedrock_region`            | `str`  | AWS region for Bedrock service.                                                                | No       | None                 |
