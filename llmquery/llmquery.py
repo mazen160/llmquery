@@ -84,7 +84,9 @@ class LLMQuery(object):
         self.template = None
         self.templates = []
         if provider is None:
-            raise ValueError("Provider must be specified through parameter or LLMQUERY_PROVIDER environment variable")
+            raise ValueError(
+                "Provider must be specified through parameter or LLMQUERY_PROVIDER environment variable"
+            )
         provider = provider.upper()
         if provider not in ACCEPTED_PROVIDERS:
             raise ValueError(f"Provider '{provider}' is not supported.")
@@ -156,10 +158,12 @@ class LLMQuery(object):
             raise ValueError(
                 "You must specify either 'template_inline' or templates-path parameters."
             )
-        
+
         if self.template_inline:
             self.template = self.template_inline
-            self.template = parser.Template(inline=self.template, variables=self.variables)
+            self.template = parser.Template(
+                inline=self.template, variables=self.variables
+            )
 
         return self.RawQuery(
             system_prompt=self.template.rendered_system_prompt,
@@ -190,7 +194,7 @@ class LLMQuery(object):
                 openai_api_key=self.openai_api_key,
                 model=self.model,
                 system_prompt=system_prompt,
-                user_prompt=user_prompt
+                user_prompt=user_prompt,
             )
         elif self.provider == "ANTHROPIC":
             return anthropic_claude.anthropic_claude_message(
@@ -198,7 +202,7 @@ class LLMQuery(object):
                 anthropic_api_key=self.anthropic_api_key,
                 model=self.model,
                 system_prompt=system_prompt,
-                user_prompt=user_prompt
+                user_prompt=user_prompt,
             )
         elif self.provider == "GOOGLE_GEMINI":
             return google_gemini.google_gemini_generate_content(
@@ -206,7 +210,7 @@ class LLMQuery(object):
                 google_gemini_api_key=self.google_gemini_api_key,
                 model=self.model,
                 system_prompt=system_prompt,
-                user_prompt=user_prompt
+                user_prompt=user_prompt,
             )
         elif self.provider == "OLLAMA":
             return ollama.ollama_generate_content(
@@ -222,7 +226,7 @@ class LLMQuery(object):
                 user_prompt=user_prompt,
                 anthropic_version=self.aws_bedrock_anthropic_version,
                 aws_region=self.aws_bedrock_region,
-                max_tokens=self.max_tokens
+                max_tokens=self.max_tokens,
             )
         elif self.provider == "DEEPSEEK":
             return deepseek.deepseek_generate_content(
@@ -230,7 +234,7 @@ class LLMQuery(object):
                 deepseek_api_key=self.deepseek_api_key,
                 model=self.model,
                 system_prompt=system_prompt,
-                user_prompt=user_prompt
+                user_prompt=user_prompt,
             )
         elif self.provider == "MISTRAL":
             return mistral.mistral_generate_content(
@@ -238,7 +242,7 @@ class LLMQuery(object):
                 mistral_api_key=self.mistral_api_key,
                 model=self.model,
                 system_prompt=system_prompt,
-                user_prompt=user_prompt
+                user_prompt=user_prompt,
             )
         elif self.provider == "GITHUB_AI" or self.provider == "GITHUB_AI_MODELS":
             return github_ai_models.github_ai_generate_content(
@@ -246,7 +250,7 @@ class LLMQuery(object):
                 github_token=self.github_token,
                 model=self.model,
                 system_prompt=system_prompt,
-                user_prompt=user_prompt
+                user_prompt=user_prompt,
             )
         else:
             raise ValueError("Provider not supported.")
