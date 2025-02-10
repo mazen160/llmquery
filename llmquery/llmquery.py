@@ -49,22 +49,27 @@ TEMPLATES_PATH = find_templates_path()
 class LLMQuery(object):
     def __init__(
         self,
-        provider: str = None,
+        provider: str = os.getenv("LLMQUERY_PROVIDER"),
         template_inline: str = None,
-        templates_path: str = None,
+        templates_path: str = os.getenv("LLMQUERY_TEMPLATES_PATH"),
+        templates_path_public: str = os.getenv("LLMQUERY_TEMPLATES_PATH_PUBLIC"),
+        templates_path_private: str = os.getenv("LLMQUERY_TEMPLATES_PATH_PRIVATE"),
         template_id: str = None,
         variables: dict = None,
-        openai_api_key: str = None,
-        anthropic_api_key: str = None,
-        google_gemini_api_key: str = None,
-        deepseek_api_key: str = None,
-        mistral_api_key: str = None,
-        github_token: str = None,
-        model: str = None,
+        openai_api_key: str = os.getenv("OPENAI_API_KEY"),
+        anthropic_api_key: str = os.getenv("ANTHROPIC_API_KEY"),
+        google_gemini_api_key: str = os.getenv("GOOGLE_GEMINI_API_KEY"),
+        deepseek_api_key: str = os.getenv("DEEPSEEK_API_KEY"),
+        mistral_api_key: str = os.getenv("MISTRAL_API_KEY"),
+        github_token: str = os.getenv("GITHUB_TOKEN"),
+        model: str = os.getenv("LLMQUERY_MODEL"),
         max_tokens: int = 8192,
         max_length: int = 2048,
         aws_bedrock_anthropic_version: str = None,
-        aws_bedrock_region: str = None,
+        aws_bedrock_region: str = os.getenv("AWS_REGION"),
+        aws_access_key_id: str = os.getenv("AWS_ACCESS_KEY_ID"),
+        aws_secret_access_key: str = os.getenv("AWS_SECRET_ACCESS_KEY"),
+        aws_session_token: str = os.getenv("AWS_SESSION_TOKEN"),
     ):
         self.template = None
         provider = provider.upper()
@@ -106,8 +111,24 @@ class LLMQuery(object):
                 self.templates, variables=self.variables
             )
 
+        if templates_path_public:
+            templates_public = parser.load_templates(templates_path_public)
+            templates_public = parser. (
+                templates_public, variables=self.variables
+            )
+            self.templates.extend(templates_public)
+
+        if templates_path_private:
+            templates_private = parser.load_templates(templates_path_private)
+            templates_private = parser.filter_invalid_templates(
+                templates_private, variables=self.variables
+            )
+            self.templates.extend(templates_private)
+
         if len(self.templates) == 1:
             self.template = self.templates[0]
+
+        parser.check_unique_ids(self.templates)
 
         if len(self.templates) > 1 and not template_id:
             raise ValueError(

@@ -75,6 +75,10 @@ class Template(object):
     def __parse_template(self):
         return yaml.safe_load(self.content)
 
+def check_unique_ids(templates):
+    ids = [t["id"] for t in templates]
+    if len(ids) != len(set(ids)):
+        raise ValueError("Templates have duplicate IDs.")
 
 def load_templates(path: str):
     p = pathlib.Path(path)
