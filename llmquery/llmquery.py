@@ -113,7 +113,7 @@ class LLMQuery(object):
 
         if templates_path_public:
             templates_public = parser.load_templates(templates_path_public)
-            templates_public = parser. (
+            templates_public = parser.filter_invalid_templates(
                 templates_public, variables=self.variables
             )
             self.templates.extend(templates_public)
@@ -167,64 +167,99 @@ class LLMQuery(object):
         self.variables.update(variables)
 
     def Query(self):
-        if self.provider == "OPENAI":
+        """Execute the query using the processed template"""
+        return self.raw_query(
+            system_prompt=self.template.rendered_system_prompt,
+            user_prompt=self.template.rendered_prompt
+        )
+
+    def raw_query(
+        self,
+        system_prompt: str = None,
+        user_prompt: str = None,
+        provider: str = None,
+        model: str = None,
+        max_tokens: int = None
+    ):
+        """Direct query execution without template processing"""
+        # Use instance values as defaults if not provided
+        provider = provider or self.provider
+        model = model or self.model
+        max_tokens = max_tokens or self.max_tokens
+
+        # Validation
+        if not user_prompt:
+            raise ValueError("user_prompt parameter is required")
+
+        # Calculate token usage
+        prompt_tokens = parser.get_prompt_tokens_count(user_prompt)
+        system_prompt_tokens = parser.get_prompt_tokens_count(system_prompt or "")
+        total_tokens = prompt_tokens + system_prompt_tokens
+        
+        if total_tokens > max_tokens:
+            raise ValueError(
+                f"Total tokens ({total_tokens}) exceed maximum allowed ({max_tokens})"
+            )
+
+        # Provider dispatch
+        if provider == "OPENAI":
             return openai.openai_chat_completion(
                 openai_api_key=self.openai_api_key,
-                model=self.model,
-                system_prompt=self.template.rendered_system_prompt,
-                user_prompt=self.template.rendered_prompt,
+                model=model,
+                system_prompt=system_prompt,
+                user_prompt=user_prompt,
             )
-        elif self.provider == "ANTHROPIC":
+        elif provider == "ANTHROPIC":
             return anthropic_claude.anthropic_cluade_message(
                 anthropic_api_key=self.anthropic_api_key,
-                model=self.model,
-                system_prompt=self.template.rendered_system_prompt,
-                user_prompt=self.template.rendered_prompt,
+                model=model,
+                system_prompt=system_prompt,
+                user_prompt=user_prompt,
             )
-        elif self.provider == "GOOGLE_GEMINI":
+        elif provider == "GOOGLE_GEMINI":
             return google_gemini.google_gemini_generate_content(
                 url_endpoint=None,
                 google_gemini_api_key=self.google_gemini_api_key,
-                model=self.model,
-                system_prompt=self.template.rendered_system_prompt,
-                user_prompt=self.template.rendered_prompt,
+                model=model,
+                system_prompt=system_prompt,
+                user_prompt=user_prompt,
             )
-        elif self.provider == "OLLAMA":
+        elif provider == "OLLAMA":
             return ollama.ollama_generate_content(
                 url_endpoint=None,
-                model=self.model,
-                system_prompt=self.template.rendered_system_prompt,
-                user_prompt=self.template.rendered_prompt,
+                model=model,
+                system_prompt=system_prompt,
+                user_prompt=user_prompt,
             )
-        elif self.provider == "AWS_BEDROCK":
+        elif provider == "AWS_BEDROCK":
             return aws_bedrock.aws_bedrock_generate_content(
-                model=self.model,
-                system_prompt=self.template.rendered_system_prompt,
-                user_prompt=self.template.rendered_prompt,
+                model=model,
+                system_prompt=system_prompt,
+                user_prompt=user_prompt,
                 anthropic_version=self.aws_bedrock_anthropic_version,
                 aws_region=self.aws_bedrock_region,
-                max_tokens=self.max_tokens,
+                max_tokens=max_tokens,
             )
-        elif self.provider == "DEEPSEEK":
+        elif provider == "DEEPSEEK":
             return deepseek.deepseek_generate_content(
                 deepseek_api_key=self.deepseek_api_key,
-                model=self.model,
-                system_prompt=self.template.rendered_system_prompt,
-                user_prompt=self.template.rendered_prompt,
+                model=model,
+                system_prompt=system_prompt,
+                user_prompt=user_prompt,
             )
-        elif self.provider == "MISTRAL":
+        elif provider == "MISTRAL":
             return mistral.mistral_generate_content(
                 mistral_api_key=self.mistral_api_key,
-                model=self.model,
-                system_prompt=self.template.rendered_system_prompt,
-                user_prompt=self.template.rendered_prompt,
+                model=model,
+                system_prompt=system_prompt,
+                user_prompt=user_prompt,
             )
-        elif self.provider == "GITHUB_AI" or self.provider == "GITHUB_AI_MODELS":
+        elif provider == "GITHUB_AI" or provider == "GITHUB_AI_MODELS":
             return github_ai_models.github_ai_generate_content(
                 github_token=self.github_token,
-                model=self.model,
-                system_prompt=self.template.rendered_system_prompt,
-                user_prompt=self.template.rendered_prompt,
+                model=model,
+                system_prompt=system_prompt,
+                user_prompt=user_prompt,
             )
         else:
             raise ValueError("Provider not supported.")
