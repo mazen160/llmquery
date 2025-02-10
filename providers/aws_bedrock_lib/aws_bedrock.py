@@ -12,7 +12,9 @@ ALLOWED_MODELS = [
 DEFAULT_MODEL = "anthropic.claude-3-haiku-20240307-v1:0"
 MAX_TOKENS = 8129
 ANTHROPIC_VERSION = "bedrock-2023-05-31"
-
+DEFAULT_TEMPERATURE = 1.0
+DEFAULT_TOP_K = 250
+DEFAULT_TOP_P = 0.999
 
 def aws_bedrock_generate_content(
     model: str = None,
@@ -52,13 +54,24 @@ def aws_bedrock_generate_content(
     # Initialize AWS Bedrock runtime client
     bedrock_runtime = boto3.client(service_name="bedrock-runtime", region_name=region)
 
-    # Combine system and user prompts if both are provided
-    prompt = f"{system_prompt}\n\n{user_prompt}" if system_prompt else user_prompt
-
     payload = {
-        "anthropic_version": anthropic_version,
+        "anthropic_version": anthropic_version, 
         "max_tokens": max_tokens,
-        "messages": [{"role": "user", "content": [{"type": "text", "text": prompt}]}],
+        "system": system_prompt,
+        "temperature": DEFAULT_TEMPERATURE,
+        "top_k": DEFAULT_TOP_K,
+        "top_p": DEFAULT_TOP_P,
+        "messages": [
+            {
+                "role": "user",
+                "content": [
+                    {
+                        "type": "text",
+                        "text": user_prompt,  
+                    }
+                ],
+            }
+        ],
     }
 
     response = bedrock_runtime.invoke_model(
