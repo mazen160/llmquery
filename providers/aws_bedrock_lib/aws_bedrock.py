@@ -12,6 +12,10 @@ ALLOWED_MODELS = [
 DEFAULT_MODEL = "anthropic.claude-3-haiku-20240307-v1:0"
 MAX_TOKENS = 8129
 ANTHROPIC_VERSION = "bedrock-2023-05-31"
+DEFAULT_TEMPERATURE = 1.0
+DEFAULT_TOP_K = 250
+DEFAULT_TOP_P = 0.999
+DEFAULT_SYSTEM_PROMPT = "You are a highly intelligent assistant. Respond to user queries with precise, well-informed answers on the first attempt. Tailor responses to the user's context and intent, using clear and concise language. Always prioritize relevance, accuracy, and value."
 
 
 def aws_bedrock_generate_content(
@@ -20,7 +24,7 @@ def aws_bedrock_generate_content(
     user_prompt: str = None,
     aws_region: str = None,
     max_tokens: int = MAX_TOKENS,
-    anthropic_version: str = ANTHROPIC_VERSION,
+    anthropic_version: str = None,
 ) -> Dict[str, Any]:
     """
     Generate content using AWS Bedrock's models.
@@ -43,22 +47,38 @@ def aws_bedrock_generate_content(
         raise ValueError(
             f"Model {model} is not supported. Supported models are: {ALLOWED_MODELS}"
         )
+    if not anthropic_version:
+        anthropic_version = ANTHROPIC_VERSION
 
     if not user_prompt:
         raise ValueError("User prompt is required.")
+
+    if not system_prompt:
+        system_prompt = DEFAULT_SYSTEM_PROMPT
 
     region = aws_region or AWS_REGION
 
     # Initialize AWS Bedrock runtime client
     bedrock_runtime = boto3.client(service_name="bedrock-runtime", region_name=region)
 
-    # Combine system and user prompts if both are provided
-    prompt = f"{system_prompt}\n\n{user_prompt}" if system_prompt else user_prompt
-
     payload = {
         "anthropic_version": anthropic_version,
         "max_tokens": max_tokens,
-        "messages": [{"role": "user", "content": [{"type": "text", "text": prompt}]}],
+        "system": system_prompt,
+        "temperature": DEFAULT_TEMPERATURE,
+        "top_k": DEFAULT_TOP_K,
+        "top_p": DEFAULT_TOP_P,
+        "messages": [
+            {
+                "role": "user",
+                "content": [
+                    {
+                        "type": "text",
+                        "text": user_prompt,
+                    }
+                ],
+            }
+        ],
     }
 
     response = bedrock_runtime.invoke_model(
