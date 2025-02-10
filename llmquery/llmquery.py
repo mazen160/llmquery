@@ -81,6 +81,8 @@ class LLMQuery(object):
         self.template_inline = template_inline
         self.max_length = max_length
         self.template = None
+        if provider is None:
+            raise ValueError("Provider must be specified through parameter or LLMQUERY_PROVIDER environment variable")
         provider = provider.upper()
         if provider not in ACCEPTED_PROVIDERS:
             raise ValueError(f"Provider '{provider}' is not supported.")
@@ -106,6 +108,7 @@ class LLMQuery(object):
         self.variables.update(variables)
 
     def Query(self):
+        self.templates = []
         if self.templates_path:
             self.templates = parser.load_templates(self.templates_path)
             self.templates = parser.filter_invalid_templates(
@@ -154,8 +157,8 @@ class LLMQuery(object):
                 "You must specify either 'template_inline' or 'templates_path' parameter."
             )
         
-        if template_inline:
-            self.template = template_inline
+        if self.template_inline:
+            self.template = self.template_inline
             self.template = parser.Template(inline=self.template, variables=self.variables)
 
         return self.RawQuery(
@@ -237,7 +240,7 @@ class LLMQuery(object):
                 system_prompt=system_prompt,
                 user_prompt=user_prompt
             )
-        elif self.provider == "GITHUB_AI" or self.provider == "GITHUB_AI_MODELS":
+        elif self.provider == "GITHUB_AI":
             return github_ai_models.github_ai_generate_content(
                 url_endpoint=self.url_endpoint,
                 github_token=self.github_token,
