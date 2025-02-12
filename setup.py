@@ -19,7 +19,7 @@ with open("requirements.txt") as f:
 
 setup(
     name="llmquery",
-    version="0.1.17",
+    version="0.1.18",
     author="Mazin Ahmed",
     author_email="mazin@mazinahmed.net",
     description="A package for querying various LLM providers",

@@ -32,7 +32,7 @@ DEFAULT_ENDPOINT = "https://api.anthropic.com/v1/messages"
 DEFAULT_SYSTEM_PROMPT = "You are a highly intelligent assistant. Respond to user queries with precise, well-informed answers on the first attempt. Tailor responses to the user's context and intent, using clear and concise language. Always prioritize relevance, accuracy, and value."
 
 
-def anthropic_cluade_message(
+def anthropic_claude_message(
     url_endpoint: str = None,
     anthropic_api_key: str = None,
     model: str = None,
