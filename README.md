@@ -81,7 +81,7 @@ query = LLMQuery(
     template_id="pr-reviews"
     variables={"diff": diff},
     anthropic_api_key="your-api-key",
-    model="claude-3-5-sonnet-latest"
+    model="claude-3-5-sonnet-20241022"
 )
 
 response = query.Query()
@@ -103,7 +103,7 @@ query = LLMQuery(
     """,
     variables=variables,
     openai_api_key="your-api-key",
-    model="gpt-4o-mini",
+    model="gpt-4o",
 )
 
 response = query.Query()
@@ -143,7 +143,7 @@ options:
                         JSON string of variables to pass to the template.
   --variables-file VARIABLES_FILE
                         JSON file of variables to pass to the template.
-  --model MODEL         The model to use for the query (e.g., gpt-4).
+  --model MODEL         The model to use for the query (e.g., gpt-4o).
   --max-tokens MAX_TOKENS
                         Maximum number of tokens for the response (default: 8192).
   --max-length MAX_LENGTH
@@ -153,7 +153,7 @@ options:
 
 ```bash
 $ llmquery --provider OPENAI --template ./llmquery-templates/chat-template.yaml \
-  --variables '{"user_input": "What is AI?"}' --api-key your-api-key --model gpt-4
+  --variables '{"user_input": "What is AI?"}' --api-key your-api-key --model gpt-4o
 ```
 
 The `llmquery` CLI provides a command-line interface for interacting with Language Model APIs. The tool simplifies querying large language models by using YAML templates. This can used for various applications such as automation, testing, and scripting.
@@ -202,7 +202,7 @@ The `llmquery` binary is executed from the command line and supports various opt
 
   - **Description**: Specifies the model to query.
   - **Default**: Set by the `LLMQUERY_MODEL` environment variable.
-  - **Example**: `--model gpt-4`
+  - **Example**: `--model gpt-4o`
 
 - `--max-tokens`
 
@@ -227,7 +227,7 @@ The `llmquery` binary is executed from the command line and supports various opt
 ```bash
 llmquery --provider OPENAI --templates-path ./llmquery-templates \
   --template-id basic-query --variables '{"user_input": "What is AI?"}' \
-  --api-key YOUR_API_KEY --model gpt-4
+  --api-key YOUR_API_KEY --model gpt-4o
 ```
 
 ### Using Variables from a File
@@ -235,7 +235,7 @@ llmquery --provider OPENAI --templates-path ./llmquery-templates \
 ```bash
 llmquery --provider ANTHROPIC --templates-path ./llmquery-templates \
   --template-id basic-query --variables-file ./vars.json \
-  --api-key YOUR_API_KEY --model claude-3-5-sonnet-latest
+  --api-key YOUR_API_KEY --model claude-3-5-sonnet-20241022
 ```
 
 ### Setting Maximum Tokens
@@ -243,7 +243,7 @@ llmquery --provider ANTHROPIC --templates-path ./llmquery-templates \
 ```bash
 llmquery --provider GOOGLE_GEMINI --templates-path ./llmquery-templates \
   --template-id translate-task --variables '{"text": "Hello", "language": "French"}' \
-  --api-key YOUR_API_KEY --model gemini-latest --max-tokens 1000
+  --api-key YOUR_API_KEY --model gemini-2.0-flash-exp --max-tokens 1000
 ```
 
 ---
@@ -266,7 +266,7 @@ query = LLMQuery(
     template_id="detect-security-vulnerabilities"
     variables={"code": code},
     anthropic_api_key="your-api-key",
-    model="claude-3-5-sonnet-latest"
+    model="claude-3-5-sonnet-20241022"
 )
 
 print(query.Query())
@@ -290,7 +290,7 @@ query = LLMQuery(
     template_id="pr-summary-generator",
     variables={"diff": diff},
     google_gemini_api_key="your-api-key",
-    model="gemini-1.5-flash"
+    model="gemini-2.0-flash-exp"
 )
 
 print(query.Query())
