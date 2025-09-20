@@ -15,13 +15,22 @@ curl --location "https://api.mistral.ai/v1/chat/completions" \
 
 MISTRAL_API_ENDPOINT = "https://api.mistral.ai/v1/chat/completions"
 ACCEPTED_MODELS = [
+    # Text / General
+    "mistral-large-2411",
+    "mistral-large-latest",
+    "mistral-medium-latest",
+    "mistral-small-latest",
+    # Vision
+    "pixtral-large-latest",
+    "pixtral-12b-latest",
+    # Code
+    "codestral-2501",
+    "codestral-latest",
+    # Legacy models (kept for compatibility)
     "ministral-3b-latest",
     "mistral-small",
-    "mistral-large-latest",
     "mistral-medium",
     "open-mistral-nemo",
-    "mistral-small-latest",
-    "codestral-latest",
     "ministral-8b-latest",
     "open-codestral-mamba",
 ]
@@ -36,19 +45,6 @@ def mistral_generate_content(
     system_prompt: str = None,
     user_prompt: str = None,
 ):
-    ACCEPTED_MODELS = [
-        "mistral-large-latest",
-        "mistral-medium",
-        "mistral-small",
-        "codestral-latest",
-        "mistral-small-latest",
-        "open-mistral-nemo",
-        "open-codestral-mamba",
-        "ministral-8b-latest",
-        "ministral-3b-latest",
-        "mistral-large-latest",
-        "ministral-3b-latest",
-    ]
 
     if not url_endpoint:
         url_endpoint = MISTRAL_API_ENDPOINT

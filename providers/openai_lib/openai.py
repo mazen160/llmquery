@@ -23,11 +23,18 @@ curl https://api.openai.com/v1/chat/completions \
 
 OPENAI_CHAT_COMPLETION_API_ENDPOINT = "https://api.openai.com/v1/chat/completions"
 ACCEPTED_MODELS = [
+    # Current recommended models
     "gpt-4o",
+    "gpt-4o-mini",
+    "gpt-4.1",
+    "gpt-4.1-mini",
+    # Reasoning models
+    "o4-mini",
+    "o3",
+    # Existing models (kept for compatibility)
     "gpt-4o-turbo",
     "gpt-4o-2024-11-20",
     "gpt-4o-2024-08-06",
-    "gpt-4o-mini",
     "gpt-4o-mini-2024-07-18",
     "o1-mini",
     "o1-mini-2024-09-12",
@@ -39,6 +46,7 @@ ACCEPTED_MODELS = [
     "gpt-4-0125-preview",
     "gpt-4-1106-preview",
     "gpt-4-vision-preview",
+    "gpt-3.5-turbo",
     "gpt-3.5-turbo-0125",
     "gpt-3.5-turbo-instruct",
     "gpt-3.5-turbo-1106",

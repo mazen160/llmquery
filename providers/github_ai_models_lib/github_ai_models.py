@@ -26,6 +26,25 @@ curl -X POST "https://models.inference.ai.azure.com/chat/completions" \
 
 GITHUB_AI_API_ENDPOINT = "https://models.inference.ai.azure.com/chat/completions"
 ACCEPTED_MODELS = [
+    # OpenAI
+    "openai/gpt-4o",
+    "openai/gpt-4.1",
+    "openai/gpt-4.1-mini",
+    "openai/o1-preview",
+    # Meta (Llama) via AzureML registry IDs
+    "azureml-meta/Meta-Llama-3.1-8B-Instruct",
+    "azureml-meta/Meta-Llama-3.1-70B-Instruct",
+    "azureml-meta/Meta-Llama-3.1-405B-Instruct",
+    # Mistral
+    "azureml-mistral/Mistral-Large-2411",
+    "azureml-mistral/mistral-medium-2505",
+    # DeepSeek
+    "azureml-deepseek/DeepSeek-V3-0324",
+    # Microsoft
+    "azureml/Phi-4",
+    # Cohere (chat)
+    "azureml-cohere/Cohere-command-a",
+    # Legacy models (kept for compatibility)
     "DeepSeek-R1",
     "o3-mini",
     "Codestral-2501",
