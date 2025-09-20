@@ -16,8 +16,8 @@ curl https://api.deepseek.com/chat/completions \
       }'
 """
 
-DEEPSEEK_API_ENDPOINT = "https://api.deepseek.com/chat/completions"
-ACCEPTED_MODELS = ["deepseek-chat", "deepseek-reasoner", "deepseek-coder"]
+DEEPSEEK_API_ENDPOINT = "https://api.deepseek.com/v1/chat/completions"
+ACCEPTED_MODELS = ["deepseek-chat", "deepseek-reasoner"]
 DEFAULT_MODEL = "deepseek-chat"
 DEFAULT_SYSTEM_PROMPT = "You are a highly intelligent assistant. Respond to user queries with precise, well-informed answers on the first attempt. Tailor responses to the user's context and intent, using clear and concise language. Always prioritize relevance, accuracy, and value."
 

@@ -18,8 +18,15 @@ curl https://api.anthropic.com/v1/messages \
 
 
 ACCEPTED_MODELS = [
-    "claude-3-5-sonnet-20241022",
-    "claude-3-5-sonnet-latest",
+    # Claude 4.x
+    "claude-opus-4-1-20250805",
+    "claude-opus-4-20250514",
+    "claude-sonnet-4-20250514",
+    # Claude 3.7
+    "claude-3-7-sonnet-20250219",
+    "claude-3-7-sonnet-latest",
+    # Claude 3.5 / 3 (kept for compatibility)
+    # Note: claude-3-5-sonnet-20241022 deprecated Oct 22, 2025
     "claude-3-5-haiku-20241022",
     "claude-3-5-haiku-latest",
     "claude-3-opus-20240229",

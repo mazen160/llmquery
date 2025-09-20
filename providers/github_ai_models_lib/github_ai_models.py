@@ -24,31 +24,63 @@ curl -X POST "https://models.inference.ai.azure.com/chat/completions" \
     }'
 """
 
-GITHUB_AI_API_ENDPOINT = "https://models.inference.ai.azure.com/chat/completions"
-ACCEPTED_MODELS = [
-    "DeepSeek-R1",
-    "o3-mini",
-    "Codestral-2501",
-    "Phi-4",
-    "Mistral-Large-2411",
-    "Llama-3-3-70B-Instruct",
-    "Ministral-3B",
-    "o1-preview",
-    "o1-mini",
-    "Meta-Llama-3-1-8B-Instruct",
-    "Meta-Llama-3-1-70B-Instruct",
-    "Meta-Llama-3-1-405B-Instruct",
-    "Mistral-large-2407",
-    "Mistral-Nemo",
-    "gpt-4o-mini",
-    "Mistral-large",
-    "Mistral-small",
-    "Meta-Llama-3-70B-Instruct",
-    "Meta-Llama-3-8B-Instruct",
-    "gpt-4o",
+CATALOG_URL = "https://models.github.ai/catalog/models"
+GITHUB_AI_API_ENDPOINT = "https://models.github.ai/inference/chat/completions"
+
+STATIC_ACCEPTED_MODELS = [
+    # OpenAI
+    "openai/gpt-4.1",
+    "openai/gpt-4.1-mini",
+    "openai/gpt-4o",
+    "openai/o1-preview",
+    # Meta (Llama)
+    "azureml-meta/Meta-Llama-3.1-8B-Instruct",
+    "azureml-meta/Meta-Llama-3.1-70B-Instruct",
+    "azureml-meta/Meta-Llama-3.1-405B-Instruct",
+    # Mistral
+    "azureml-mistral/Mistral-Large-2411",
+    "azureml-mistral/mistral-medium-2505",
+    # Microsoft
+    "azureml/Phi-4",
+    # Cohere (embeddings)
+    "azureml-cohere/Cohere-embed-v3-multilingual",
+    "azureml-cohere/Cohere-embed-v3-english",
 ]
-DEFAULT_MODEL = "gpt-4o-mini"
+
+ACCEPTED_MODELS = STATIC_ACCEPTED_MODELS  # For backward compatibility
+DEFAULT_MODEL = "openai/gpt-4.1"
 DEFAULT_SYSTEM_PROMPT = "You are a helpful AI assistant."
+
+
+def list_catalog_models(token=None):
+    """Return list of model IDs from the GitHub Models catalog."""
+    token = token or os.getenv("GITHUB_TOKEN") or os.getenv("GH_TOKEN")
+    if not token:
+        return list(STATIC_ACCEPTED_MODELS)
+    try:
+        r = requests.get(
+            CATALOG_URL,
+            headers={
+                "Accept": "application/vnd.github+json",
+                "Authorization": f"Bearer {token}",
+                "X-GitHub-Api-Version": "2022-11-28",
+            },
+            timeout=60,
+        )
+        r.raise_for_status()
+        ids = [
+            item.get("id")
+            for item in r.json()
+            if isinstance(item, dict) and item.get("id")
+        ]
+        return sorted(set(STATIC_ACCEPTED_MODELS).union(ids))
+    except Exception:
+        return list(STATIC_ACCEPTED_MODELS)
+
+
+def get_accepted_models():
+    """Get current accepted models (static + dynamic catalog)."""
+    return list_catalog_models()
 
 
 def github_ai_generate_content(

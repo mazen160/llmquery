@@ -16,8 +16,20 @@ curl "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:g
 GOOGLE_GEMINI_GENERATECONTENT_API_ENDPOINT = (
     "https://generativelanguage.googleapis.com/v1beta/models/{MODEL}:generateContent"
 )
-ACCEPTED_MODELS = ["gemini-1.5-flash", "gemini-2.0-flash-exp", "gemini-1.5-pro"]
-DEFAULT_MODEL = "gemini-1.5-flash"
+ACCEPTED_MODELS = [
+    # Gemini 2.5 (current top tier)
+    "gemini-2.5-pro",
+    "gemini-2.5-flash",
+    "gemini-2.5-flash-lite",
+    # Gemini 2.0
+    "gemini-2.0-flash",
+    "gemini-2.0-flash-lite",
+    "gemini-2.0-flash-exp",
+    # Gemini 1.5 (kept for compatibility)
+    # Note: gemini-1.5-pro deprecated Sept 2025
+    "gemini-1.5-flash",
+]
+DEFAULT_MODEL = "gemini-2.5-flash"
 DEFAULT_SYSTEM_PROMPT = "You are a highly intelligent assistant. Respond to user queries with precise, well-informed answers on the first attempt. Tailor responses to the user's context and intent, using clear and concise language. Always prioritize relevance, accuracy, and value."
 
 

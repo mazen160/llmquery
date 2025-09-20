@@ -10,6 +10,36 @@ import requests
 """
 
 OLLAMA_API_ENDPOINT = "http://localhost:11434/api/generate"
+
+ACCEPTED_MODELS = [
+    # Meta Llama
+    "llama4",
+    "llama4:16x17b",
+    "llama4:128x17b",
+    "llama3.3",
+    "llama3.2",
+    "llama3.2-vision",
+    "llama3.1:8b",
+    "llama3.1:70b",
+    "llama3.1:405b",
+    # Alibaba Qwen
+    "qwen3",
+    "qwen2.5:7b",
+    "qwen2.5:14b",
+    "qwen2.5:32b",
+    "qwen2.5:72b",
+    # Google Gemma
+    "gemma3n",
+    "gemma2:2b",
+    "gemma2:9b",
+    "gemma2:27b",
+    # DeepSeek
+    "deepseek-r1",
+    # Other models
+    "phi4",
+    "mistral-nemo",
+]
+
 DEFAULT_MODEL = "llama3.3"
 DEFAULT_SYSTEM_PROMPT = "You are a highly intelligent assistant. Respond to user queries with precise, well-informed answers on the first attempt. Tailor responses to the user's context and intent, using clear and concise language. Always prioritize relevance, accuracy, and value."
 
