@@ -68,7 +68,11 @@ def list_catalog_models(token=None):
             timeout=60,
         )
         r.raise_for_status()
-        ids = [item.get("id") for item in r.json() if isinstance(item, dict) and item.get("id")]
+        ids = [
+            item.get("id")
+            for item in r.json()
+            if isinstance(item, dict) and item.get("id")
+        ]
         return sorted(set(STATIC_ACCEPTED_MODELS).union(ids))
     except Exception:
         return list(STATIC_ACCEPTED_MODELS)
