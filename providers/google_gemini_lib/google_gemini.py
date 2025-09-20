@@ -26,11 +26,10 @@ ACCEPTED_MODELS = [
     "gemini-2.0-flash-lite",
     "gemini-2.0-flash-exp",
     # Gemini 1.5 (kept for compatibility)
-    "gemini-1.5-pro",
-    "gemini-1.5-pro-latest",
+    # Note: gemini-1.5-pro deprecated Sept 2025
     "gemini-1.5-flash",
 ]
-DEFAULT_MODEL = "gemini-1.5-flash"
+DEFAULT_MODEL = "gemini-2.5-flash"
 DEFAULT_SYSTEM_PROMPT = "You are a highly intelligent assistant. Respond to user queries with precise, well-informed answers on the first attempt. Tailor responses to the user's context and intent, using clear and concise language. Always prioritize relevance, accuracy, and value."
 
 

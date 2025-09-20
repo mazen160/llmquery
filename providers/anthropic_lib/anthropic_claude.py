@@ -26,8 +26,7 @@ ACCEPTED_MODELS = [
     "claude-3-7-sonnet-20250219",
     "claude-3-7-sonnet-latest",
     # Claude 3.5 / 3 (kept for compatibility)
-    "claude-3-5-sonnet-20241022",
-    "claude-3-5-sonnet-latest",
+    # Note: claude-3-5-sonnet-20241022 deprecated Oct 22, 2025
     "claude-3-5-haiku-20241022",
     "claude-3-5-haiku-latest",
     "claude-3-opus-20240229",

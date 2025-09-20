@@ -15,26 +15,19 @@ curl --location "https://api.mistral.ai/v1/chat/completions" \
 
 MISTRAL_API_ENDPOINT = "https://api.mistral.ai/v1/chat/completions"
 ACCEPTED_MODELS = [
-    # Text / General
-    "mistral-large-2411",
-    "mistral-large-latest",
+    # Chat / General (latest as of Sept 2025)
+    "mistral-medium-2508",
     "mistral-medium-latest",
     "mistral-small-latest",
+    "mistral-large-2411",
     # Vision
     "pixtral-large-latest",
     "pixtral-12b-latest",
     # Code
+    "codestral-2508",
     "codestral-2501",
-    "codestral-latest",
-    # Legacy models (kept for compatibility)
-    "ministral-3b-latest",
-    "mistral-small",
-    "mistral-medium",
-    "open-mistral-nemo",
-    "ministral-8b-latest",
-    "open-codestral-mamba",
 ]
-DEFAULT_MODEL = "mistral-small-latest"
+DEFAULT_MODEL = "mistral-medium-2508"
 DEFAULT_SYSTEM_PROMPT = "You are a helpful AI assistant."
 
 
